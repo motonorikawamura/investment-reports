@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>投資分析レポート 2026/06/17</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
+    background: #0d1117; color: #e6edf3; line-height: 1.6;
+  }
+  header {
+    background: linear-gradient(135deg, #1c2128, #21262d);
+    border-bottom: 1px solid #30363d;
+    padding: 24px 40px;
+  }
+  header h1 { font-size: 1.8rem; color: #58a6ff; margin-bottom: 4px; }
+  header .meta { color: #8b949e; font-size: 0.85rem; }
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px 40px; }
+  h2 { color: #58a6ff; font-size: 1.2rem; margin: 32px 0 16px; border-left: 3px solid #58a6ff; padding-left: 12px; }
+  h3 { color: #79c0ff; font-size: 1rem; margin: 16px 0 8px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .card {
+    background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px;
+  }
+  .card.rank-1 { border-color: #ffd700; box-shadow: 0 0 12px rgba(255,215,0,0.2); }
+  .card.rank-2 { border-color: #c0c0c0; }
+  .card.rank-3 { border-color: #cd7f32; }
+  .score-badge {
+    display: inline-block; padding: 4px 12px; border-radius: 20px;
+    font-size: 0.85rem; font-weight: bold; margin-bottom: 8px;
+  }
+  .ticker { font-size: 1.3rem; font-weight: bold; color: #e6edf3; margin-bottom: 4px; }
+  .company-name { color: #8b949e; font-size: 0.85rem; margin-bottom: 12px; }
+  .score-main { font-size: 2.5rem; font-weight: bold; }
+  .score-bars { margin-top: 12px; }
+  .score-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .score-bar-label { width: 80px; font-size: 0.75rem; color: #8b949e; }
+  .score-bar-track { flex: 1; background: #21262d; border-radius: 4px; height: 8px; }
+  .score-bar-fill { height: 100%; border-radius: 4px; }
+  .score-bar-val { width: 32px; font-size: 0.75rem; text-align: right; }
+
+  /* テーブル */
+  .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  th { background: #21262d; color: #8b949e; padding: 10px 14px; text-align: left; border-bottom: 1px solid #30363d; font-weight: 500; }
+  td { padding: 10px 14px; border-bottom: 1px solid #21262d; }
+  tr:hover td { background: #161b22; }
+  .source-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;
+  }
+  .source-us_sector { background: #1f3b4d; color: #58a6ff; }
+  .source-congress  { background: #3b1f4d; color: #bc8cff; }
+  .source-minkabu   { background: #1f3b2d; color: #3fb950; }
+
+  /* アコーディオン */
+  details { background: #161b22; border: 1px solid #30363d; border-radius: 8px; margin-bottom: 12px; }
+  summary {
+    padding: 14px 20px; cursor: pointer; list-style: none; display: flex;
+    justify-content: space-between; align-items: center;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '▼'; color: #8b949e; font-size: 0.8rem; transition: transform 0.2s; }
+  details[open] summary::after { transform: rotate(180deg); }
+  .detail-content { padding: 0 20px 20px; }
+  .agent-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 12px; }
+  .agent-card { background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 14px; }
+  .agent-name { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .agent-score { font-size: 1.4rem; font-weight: bold; margin-bottom: 8px; }
+  .agent-analysis { font-size: 0.8rem; color: #8b949e; line-height: 1.5; }
+  .key-points { list-style: none; margin-top: 8px; }
+  .key-points li { font-size: 0.78rem; color: #79c0ff; padding: 3px 0; }
+  .key-points li::before { content: '• '; color: #58a6ff; }
+
+  /* チャートコンテナ */
+  .chart-container { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 4px; margin-bottom: 24px; }
+
+  /* フッター */
+  footer { background: #161b22; border-top: 1px solid #30363d; padding: 20px 40px; text-align: center; color: #8b949e; font-size: 0.8rem; margin-top: 40px; }
+
+  /* スクロールバー */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0d1117; }
+  ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📊 投資分析レポート</h1>
+  <div class="meta">
+    生成日時: 2026年06月17日 08:01 &nbsp;|&nbsp;
+    分析銘柄数: 15件 &nbsp;|&nbsp;
+    情報源: us_sector(5), congress(5), minkabu(5) &nbsp;|&nbsp;
+    処理時間: 101.4秒 &nbsp;|&nbsp;
+    モデル: claude-haiku-4-5-20251001
+  </div>
+</header>
+
+<div class="container">
+
+  <h2>🏆 上位推奨銘柄</h2>
+  <div class="grid-3">
+    
+    <div class="card rank-1">
+      <span class="score-badge" style="background:#ffeb3b22;color:#ffeb3b">🥇 中立</span>
+      <div class="ticker">1631.T</div>
+      <div class="company-name">NEXT FUNDS TOPIX-17 BANKS ETF</div>
+      <div class="score-main" style="color:#ffeb3b">5.9</div>
+      <div style="color:#8b949e;font-size:0.75rem;">/ 10.0</div>
+      <div class="score-bars">
+            <div class="score-bar-row">
+              <span class="score-bar-label">テクニカル</span>
+              <div class="score-bar-track">
+                <div class="score-bar-fill" style="width:63.0%;background:#58a6ff"></div>
+              </div>
+              <span class="score-bar-val">6.3</span>
+            </div>
+            <div class="score-bar-row">
+              <span class="score-bar-label">ファンダ</span>
+              <div class="score-bar-track">
+                <div class="score-bar-fill" style="width:43.0%;background:#ffeb3b"></div>
+              </div>
+              <span class="score-bar-val">4.3</span>
+            </div>
+            <div class="score-bar-row">
+              <span class="score-bar-label">センチメント</span>
+              <div class="score-bar-track">
+                <div class="score-bar-fill" style="width:50.0%;background:#ffeb3b"></div>
+              </div>
+              <span class="score-bar-val">5.0</span>
+            </div>
+            <div class="score-bar-row">
+              <span class="score-bar-label">リスク</span>
+              <div class="score-bar-track">
+                <div class="score-bar-fill" style="width:78.8%;background:#58a6ff"></div>
+              </div>
+              <span class="score-bar-val">7.9</span>
+            </div></div>
+    </div>
+    <div class="card rank-2">
+      <span class="score-badge" style="background:#ffeb3b22;color:#ffeb3b">🥈 中立</span>
+      <div class="ticker">1620.T</div>
+      <div class="company-name">NEXT FUNDS TOPIX-17 RAW MATERIALS & CHEMICALS ETF</div>
+      <div class="score-main" style="color:#ffeb3b">5.8</div>
+      <div style="color:#8b949e;font-size:0.75rem;">/ 10.0</div>
+      <div class="score-bars">
+            <div class="score-bar-row">
+              <span class="score-bar-label">テクニカル</span>
+              <div class="score-bar-track">
+                <div class="score-bar-fill" style="width:53.2%;background:#ffeb3b"></div>
+              </div>
+              <span class="score-bar-val">5.3</span>
+            </div>
+            <div class="score-bar-row">
+              <span class="score-bar-label">ファンダ</span>
+              <div class="score-bar-track">
+                <div class="score-bar-fill" style="width:43.0%;background:#ffeb3b"></div>
+              </div>
+              <span class="score-bar-val">4.3</span>
+            </div>
+            <div class="score-bar-row">
+              <span class="score-bar-label">センチメント</span>
+              <div class="score-bar-track">
+                <div class="score-bar-fill" style="width:50.0%;background:#ffeb3b"></div>
+              </div>
+              <span class="score-bar-val">5.0</span>
+            </div>
+            <div class="score-bar-row">
+              <span class="score-bar-label">リスク</span>
+              <div class="score-bar-track">
+                <div class="score-bar-fill" style="width:87.2%;background:#58a6ff"></div>
+              </div>
+              <span class="score-bar-val">8.7</span>
+            </div></div>
+    </div>
+    <div class="card rank-3">
+      <span class="score-badge" style="background:#ffeb3b22;color:#ffeb3b">🥉 中立</span>
+      <div class="ticker">AAPL</div>
+      <div class="company-name">Apple Inc.</div>
+      <div class="score-main" style="color:#ffeb3b">5.7</div>
+      <div style="color:#8b949e;font-size:0.75rem;">/ 10.0</div>
+      <div class="score-bars">
+            <div class="score-bar-row">
+              <span class="score-bar-label">テクニカル</span>
+              <div class="score-bar-track">
+                <div class="score-bar-fill" style="width:51.2%;background:#ffeb3b"></div>
+              </div>
+              <span class="score-bar-val">5.1</span>
+            </div>
+            <div class="score-bar-row">
+              <span class="score-bar-label">ファンダ</span>
+              <div class="score-bar-track">
+                <div class="score-bar-fill" style="width:41.8%;background:#ffeb3b"></div>
+              </div>
+              <span class="score-bar-val">4.2</span>
+            </div>
+            <div class="score-bar-row">
+              <span class="score-bar-label">センチメント</span>
+              <div class="score-bar-track">
+                <div class="score-bar-fill" style="width:47.199999999999996%;background:#ffeb3b"></div>
+              </div>
+              <span class="score-bar-val">4.7</span>
+            </div>
+            <div class="score-bar-row">
+              <span class="score-bar-label">リスク</span>
+              <div class="score-bar-track">
+                <div class="score-bar-fill" style="width:87.0%;background:#58a6ff"></div>
+              </div>
+              <span class="score-bar-val">8.7</span>
+            </div></div>
+    </div>
+  </div>
+
+  <h2>📈 スコア比較チャート</h2>
+  <div class="chart-container">
+    <div>                        <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.5.0.min.js" integrity="sha256-fHbNLP+GlIXN+efbQec78UkemUz3NJp7UmfGxC1tNxs=" crossorigin="anonymous"></script>                <div id="4e0fb030-eecb-4717-8857-f774f0376f90" class="plotly-graph-div" style="height:400px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("4e0fb030-eecb-4717-8857-f774f0376f90")) {                    Plotly.newPlot(                        "4e0fb030-eecb-4717-8857-f774f0376f90",                        [{"customdata":["us_sector","us_sector","congress","us_sector","us_sector","us_sector","congress","minkabu","congress","congress","minkabu","minkabu","congress","minkabu","minkabu"],"hovertemplate":"\u003cb\u003e%{x}\u003c\u002fb\u003e\u003cbr\u003e\u30b9\u30b3\u30a2: %{y:.1f}\u003cbr\u003e\u60c5\u5831\u6e90: %{customdata}\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":["#ffeb3b","#ffeb3b","#ffeb3b","#ffeb3b","#ffeb3b","#ffeb3b","#ffeb3b","#ffeb3b","#ffeb3b","#ffeb3b","#ffeb3b","#ff7043","#ff7043","#ff7043","#ff7043"]},"text":["5.9","5.8","5.7","5.7","5.6","5.3","4.8","4.6","4.5","4.4","4.0","3.9","3.3","3.3","3.0"],"textposition":"outside","x":["1631.T","1620.T","AAPL","1624.T","1627.T","1633.T","NVDA","6838.T","AMZN","AMD","7084.T","3559.T","TSLA","2586.T","6634.T"],"y":[5.93,5.85,5.7,5.66,5.57,5.31,4.82,4.62,4.51,4.42,4.0,3.9,3.33,3.28,3.03],"type":"bar"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"shapes":[{"line":{"color":"#3fb950","dash":"dot"},"type":"line","x0":0,"x1":1,"xref":"x domain","y0":6,"y1":6,"yref":"y"},{"line":{"color":"#f85149","dash":"dot"},"type":"line","x0":0,"x1":1,"xref":"x domain","y0":4,"y1":4,"yref":"y"}],"annotations":[{"showarrow":false,"text":"\u8cb7\u3044\u30e9\u30a4\u30f3(6.0)","x":1,"xanchor":"right","xref":"x domain","y":6,"yanchor":"bottom","yref":"y"},{"showarrow":false,"text":"\u58f2\u308a\u30e9\u30a4\u30f3(4.0)","x":1,"xanchor":"right","xref":"x domain","y":4,"yanchor":"bottom","yref":"y"}],"title":{"font":{"color":"#e6edf3"},"text":"\u9298\u67c4\u5225 \u7dcf\u5408\u6295\u8cc7\u30b9\u30b3\u30a2"},"xaxis":{"tickangle":-30,"color":"#8b949e"},"yaxis":{"range":[0,11],"color":"#8b949e","title":{"text":"\u30b9\u30b3\u30a2 (0-10)"}},"font":{"color":"#e6edf3"},"margin":{"t":60,"b":80,"l":60,"r":20},"paper_bgcolor":"#161b22","plot_bgcolor":"#0d1117","height":400},                        {"displayModeBar": false, "responsive": true}                    )                };            </script>        </div>
+  </div>
+
+  <h2>🕸️ エージェント分析レーダー（上位3銘柄）</h2>
+  <div class="chart-container">
+    <div>                            <div id="ea1885fb-6cb8-4dfe-80cf-1cba69a2c272" class="plotly-graph-div" style="height:420px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("ea1885fb-6cb8-4dfe-80cf-1cba69a2c272")) {                    Plotly.newPlot(                        "ea1885fb-6cb8-4dfe-80cf-1cba69a2c272",                        [{"fill":"toself","fillcolor":"rgba(88,166,255,0.15)","line":{"color":"#58a6ff","width":2},"name":"1631.T","r":[6.3,4.3,5.0,7.88,6.3],"theta":["\u30c6\u30af\u30cb\u30ab\u30eb","\u30d5\u30a1\u30f3\u30c0\u30e1\u30f3\u30bf\u30eb","\u30bb\u30f3\u30c1\u30e1\u30f3\u30c8","\u30ea\u30b9\u30af","\u30c6\u30af\u30cb\u30ab\u30eb"],"type":"scatterpolar"},{"fill":"toself","fillcolor":"rgba(63,185,80,0.15)","line":{"color":"#3fb950","width":2},"name":"1620.T","r":[5.32,4.3,5.0,8.72,5.32],"theta":["\u30c6\u30af\u30cb\u30ab\u30eb","\u30d5\u30a1\u30f3\u30c0\u30e1\u30f3\u30bf\u30eb","\u30bb\u30f3\u30c1\u30e1\u30f3\u30c8","\u30ea\u30b9\u30af","\u30c6\u30af\u30cb\u30ab\u30eb"],"type":"scatterpolar"},{"fill":"toself","fillcolor":"rgba(240,136,62,0.15)","line":{"color":"#f0883e","width":2},"name":"AAPL","r":[5.12,4.18,4.72,8.7,5.12],"theta":["\u30c6\u30af\u30cb\u30ab\u30eb","\u30d5\u30a1\u30f3\u30c0\u30e1\u30f3\u30bf\u30eb","\u30bb\u30f3\u30c1\u30e1\u30f3\u30c8","\u30ea\u30b9\u30af","\u30c6\u30af\u30cb\u30ab\u30eb"],"type":"scatterpolar"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"polar":{"radialaxis":{"range":[0,10],"color":"#8b949e","gridcolor":"#30363d"},"angularaxis":{"color":"#e6edf3","gridcolor":"#30363d"},"bgcolor":"#0d1117"},"font":{"color":"#e6edf3"},"margin":{"t":40,"b":40,"l":40,"r":40},"legend":{"bgcolor":"#21262d","bordercolor":"#30363d"},"paper_bgcolor":"#161b22","height":420},                        {"displayModeBar": false, "responsive": true}                    )                };            </script>        </div>
+  </div>
+
+  <h2>💹 株価推移（直近30日）</h2>
+  <div class="chart-container">
+    <div>                            <div id="a4a6745e-a4b2-406f-9ca9-3e1f7ac45c80" class="plotly-graph-div" style="height:400px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("a4a6745e-a4b2-406f-9ca9-3e1f7ac45c80")) {                    Plotly.newPlot(                        "a4a6745e-a4b2-406f-9ca9-3e1f7ac45c80",                        [{"hovertemplate":"\u003cb\u003e1631.T\u003c\u002fb\u003e\u003cbr\u003e\u65e5\u4ed8: %{x|%m\u002f%d}\u003cbr\u003e\u76f8\u5bfe\u5024: %{y:.1f}\u003cextra\u003e\u003c\u002fextra\u003e","line":{"color":"#58a6ff","width":2},"name":"1631.T","x":["2026-05-01T00:00:00+09:00","2026-05-07T00:00:00+09:00","2026-05-08T00:00:00+09:00","2026-05-11T00:00:00+09:00","2026-05-12T00:00:00+09:00","2026-05-13T00:00:00+09:00","2026-05-14T00:00:00+09:00","2026-05-15T00:00:00+09:00","2026-05-18T00:00:00+09:00","2026-05-19T00:00:00+09:00","2026-05-20T00:00:00+09:00","2026-05-21T00:00:00+09:00","2026-05-22T00:00:00+09:00","2026-05-25T00:00:00+09:00","2026-05-26T00:00:00+09:00","2026-05-27T00:00:00+09:00","2026-05-28T00:00:00+09:00","2026-05-29T00:00:00+09:00","2026-06-01T00:00:00+09:00","2026-06-02T00:00:00+09:00","2026-06-03T00:00:00+09:00","2026-06-04T00:00:00+09:00","2026-06-05T00:00:00+09:00","2026-06-08T00:00:00+09:00","2026-06-09T00:00:00+09:00","2026-06-10T00:00:00+09:00","2026-06-11T00:00:00+09:00","2026-06-12T00:00:00+09:00","2026-06-15T00:00:00+09:00","2026-06-16T00:00:00+09:00"],"y":{"dtype":"f8","bdata":"AAAAAAAAWUC1Ayilq7FZQOYLi1yxJFlAPJO\u002faKp5WUAvdJDhrOlZQMe49FCUQFpAq\u002fkwG9DlWUB\u002fGz5eDvtZQMHYbcH8\u002fFlAdMddaYbqWkBGCeQcLbxaQG+d7W5CYltAPco7JcdvW0BH1DKvojtbQP0hRL\u002f6MVtAIiCw7CTZWkCsxH+tRWVaQIrbS309glpArMR\u002frUVlWkDKg0PjCcBaQNcj2JHQiltAm0YvvnnMW0Di4+Ww\u002fxFcQB\u002fBjoRW0FtAsBA0Z4QfXECgJrZNERBcQMUkIns7t1tATGrQ0406XEAiVyypQc9cQGgplAlSlVxA"},"type":"scatter"},{"hovertemplate":"\u003cb\u003e1620.T\u003c\u002fb\u003e\u003cbr\u003e\u65e5\u4ed8: %{x|%m\u002f%d}\u003cbr\u003e\u76f8\u5bfe\u5024: %{y:.1f}\u003cextra\u003e\u003c\u002fextra\u003e","line":{"color":"#3fb950","width":2},"name":"1620.T","x":["2026-05-01T00:00:00+09:00","2026-05-07T00:00:00+09:00","2026-05-08T00:00:00+09:00","2026-05-11T00:00:00+09:00","2026-05-12T00:00:00+09:00","2026-05-13T00:00:00+09:00","2026-05-14T00:00:00+09:00","2026-05-15T00:00:00+09:00","2026-05-18T00:00:00+09:00","2026-05-19T00:00:00+09:00","2026-05-20T00:00:00+09:00","2026-05-21T00:00:00+09:00","2026-05-22T00:00:00+09:00","2026-05-25T00:00:00+09:00","2026-05-26T00:00:00+09:00","2026-05-27T00:00:00+09:00","2026-05-28T00:00:00+09:00","2026-05-29T00:00:00+09:00","2026-06-01T00:00:00+09:00","2026-06-02T00:00:00+09:00","2026-06-03T00:00:00+09:00","2026-06-04T00:00:00+09:00","2026-06-05T00:00:00+09:00","2026-06-08T00:00:00+09:00","2026-06-09T00:00:00+09:00","2026-06-10T00:00:00+09:00","2026-06-11T00:00:00+09:00","2026-06-12T00:00:00+09:00","2026-06-15T00:00:00+09:00","2026-06-16T00:00:00+09:00"],"y":{"dtype":"f8","bdata":"AAAAAAAAWUCgK2Y58vNZQC4ow2q99VlAF5Rhtd5CWkA4ES8JCIdaQBwYdaZxg1pAzVMppK\u002fpWkAzjRsYdUZaQPQ1T6WQ7llA1ltQhtXaWUAMq\u002fUWlLFZQBIvCQgn8llAAuFEvCSgWkDKsFpvQblaQAWEE\u002fGS0FpAB0adadzwWkBg1JnGDSxbQEshfc1TiVtAnkohfc1zW0DrTOMGRu1aQEhf81QKaVtAfc1TKaQvW0AgnIiXBMRaQNZ6C8qwyllAZHdo+3vMWUAn4iUB4ZRZQEshfc1T+VlA5AZGnWmMWkBKQDgRL3lbQCjDar0FNVtA"},"type":"scatter"},{"hovertemplate":"\u003cb\u003eAAPL\u003c\u002fb\u003e\u003cbr\u003e\u65e5\u4ed8: %{x|%m\u002f%d}\u003cbr\u003e\u76f8\u5bfe\u5024: %{y:.1f}\u003cextra\u003e\u003c\u002fextra\u003e","line":{"color":"#f0883e","width":2},"name":"AAPL","x":["2026-05-05T00:00:00-04:00","2026-05-06T00:00:00-04:00","2026-05-07T00:00:00-04:00","2026-05-08T00:00:00-04:00","2026-05-11T00:00:00-04:00","2026-05-12T00:00:00-04:00","2026-05-13T00:00:00-04:00","2026-05-14T00:00:00-04:00","2026-05-15T00:00:00-04:00","2026-05-18T00:00:00-04:00","2026-05-19T00:00:00-04:00","2026-05-20T00:00:00-04:00","2026-05-21T00:00:00-04:00","2026-05-22T00:00:00-04:00","2026-05-26T00:00:00-04:00","2026-05-27T00:00:00-04:00","2026-05-28T00:00:00-04:00","2026-05-29T00:00:00-04:00","2026-06-01T00:00:00-04:00","2026-06-02T00:00:00-04:00","2026-06-03T00:00:00-04:00","2026-06-04T00:00:00-04:00","2026-06-05T00:00:00-04:00","2026-06-08T00:00:00-04:00","2026-06-09T00:00:00-04:00","2026-06-10T00:00:00-04:00","2026-06-11T00:00:00-04:00","2026-06-12T00:00:00-04:00","2026-06-15T00:00:00-04:00","2026-06-16T00:00:00-04:00"],"y":{"dtype":"f8","bdata":"AAAAAAAAWUCfLPOl\u002fkpZQNCR3AJrSVlA+GncatfNWUBFKvoegMVZQB5Kp+pJ9VlAF\u002fCflwhRWkCKpIrtJ0JaQDF1F8ywb1pAsry9ztA5WkAml9WxSVNaQPvtjn05nVpAZGsEE\u002f3aWkAcLVrYUjFbQEh7phhHJltAXjcqTRVfW0DIWS2jgIRbQPOVxsNbeltAfgIvZ774WkCWrxLCI8FbQFY2VqDIUVtArLBPL6ZnW0DiNREw9g9bQNV66Vw4jVpA9Hj0j3yVWUBarNZYtKxZQEGHM6z\u002fB1pAYECFpo+iWUBl1nKNzhlaQO\u002fXbLZfWVpA"},"type":"scatter"},{"hovertemplate":"\u003cb\u003e1624.T\u003c\u002fb\u003e\u003cbr\u003e\u65e5\u4ed8: %{x|%m\u002f%d}\u003cbr\u003e\u76f8\u5bfe\u5024: %{y:.1f}\u003cextra\u003e\u003c\u002fextra\u003e","line":{"color":"#bc8cff","width":2},"name":"1624.T","x":["2026-05-01T00:00:00+09:00","2026-05-07T00:00:00+09:00","2026-05-08T00:00:00+09:00","2026-05-11T00:00:00+09:00","2026-05-12T00:00:00+09:00","2026-05-13T00:00:00+09:00","2026-05-14T00:00:00+09:00","2026-05-15T00:00:00+09:00","2026-05-18T00:00:00+09:00","2026-05-19T00:00:00+09:00","2026-05-20T00:00:00+09:00","2026-05-21T00:00:00+09:00","2026-05-22T00:00:00+09:00","2026-05-25T00:00:00+09:00","2026-05-26T00:00:00+09:00","2026-05-27T00:00:00+09:00","2026-05-28T00:00:00+09:00","2026-05-29T00:00:00+09:00","2026-06-01T00:00:00+09:00","2026-06-02T00:00:00+09:00","2026-06-03T00:00:00+09:00","2026-06-04T00:00:00+09:00","2026-06-05T00:00:00+09:00","2026-06-08T00:00:00+09:00","2026-06-09T00:00:00+09:00","2026-06-10T00:00:00+09:00","2026-06-11T00:00:00+09:00","2026-06-12T00:00:00+09:00","2026-06-15T00:00:00+09:00","2026-06-16T00:00:00+09:00"],"y":{"dtype":"f8","bdata":"AAAAAAAAWUCWfUL0X8hZQC80KXTU6FlA4mfRPDuDWUCLhbyY5GRZQLT3Oabi71lAIrDRpictWUBMeSpRfGVYQMlfIqLhC1hArQCYajHnV0BsLMaOE+VXQHIMqQYsmFdAF9aCXO4eWECvjGncYj9YQCaTfrWvMlhA\u002fHb4JD76V0C4h7nOTfVXQFV0ekNnG1hAJrG1xvGHV0D+Pji58\u002fxWQLiHuc5N9VdAORXwC7f2V0CsVo\u002fnvTlYQCZAUc+SMldA6BK+33iLV0DPXTwrPBRXQBPcForNw1ZACDe+FG9gV0B5sB1cwKBYQFdxsKz3yFhA"},"type":"scatter"},{"hovertemplate":"\u003cb\u003e1627.T\u003c\u002fb\u003e\u003cbr\u003e\u65e5\u4ed8: %{x|%m\u002f%d}\u003cbr\u003e\u76f8\u5bfe\u5024: %{y:.1f}\u003cextra\u003e\u003c\u002fextra\u003e","line":{"color":"#ff7b72","width":2},"name":"1627.T","x":["2026-05-01T00:00:00+09:00","2026-05-07T00:00:00+09:00","2026-05-08T00:00:00+09:00","2026-05-11T00:00:00+09:00","2026-05-12T00:00:00+09:00","2026-05-13T00:00:00+09:00","2026-05-14T00:00:00+09:00","2026-05-15T00:00:00+09:00","2026-05-18T00:00:00+09:00","2026-05-19T00:00:00+09:00","2026-05-20T00:00:00+09:00","2026-05-21T00:00:00+09:00","2026-05-22T00:00:00+09:00","2026-05-25T00:00:00+09:00","2026-05-26T00:00:00+09:00","2026-05-27T00:00:00+09:00","2026-05-28T00:00:00+09:00","2026-05-29T00:00:00+09:00","2026-06-01T00:00:00+09:00","2026-06-02T00:00:00+09:00","2026-06-03T00:00:00+09:00","2026-06-04T00:00:00+09:00","2026-06-05T00:00:00+09:00","2026-06-08T00:00:00+09:00","2026-06-09T00:00:00+09:00","2026-06-10T00:00:00+09:00","2026-06-11T00:00:00+09:00","2026-06-12T00:00:00+09:00","2026-06-15T00:00:00+09:00","2026-06-16T00:00:00+09:00"],"y":{"dtype":"f8","bdata":"AAAAAAAAWUCGYRiGYZhZQJIkSZIkOVlAJEmSJElyWUBVVVVVVYVZQNlRi5C\u002fRllAIH\u002fNjlpUWUA4oExc6U5ZQHGlewPK5FhA2VGLkL9GWUBU8HIKXq5YQHGlewPK5FhAOQUvp+CVWEBqEfLX7KhYQECZuNK90VhAQJm40r3RWEDY7KhFyG9YQFe6N6BMzFhAPjTWh8b6V0AVvJyClyNYQN+AMnGlq1hA\u002fpodtQgpWEBc6d6AMjFYQLdt27ZtG1hAhmEYhmEIWEBGyF+zozZYQL4BZeJKV1hAHFAmrnRfWEAj5K\u002fZUZtYQC+n4OUUPFhA"},"type":"scatter"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"shapes":[{"line":{"color":"#30363d","dash":"dot"},"type":"line","x0":0,"x1":1,"xref":"x domain","y0":100,"y1":100,"yref":"y"}],"title":{"font":{"color":"#e6edf3"},"text":"\u682a\u4fa1\u63a8\u79fb\uff08\u76f4\u8fd130\u65e5 \u002f \u958b\u59cb=100\u306b\u6b63\u898f\u5316\uff09"},"xaxis":{"color":"#8b949e","gridcolor":"#21262d"},"yaxis":{"color":"#8b949e","title":{"text":"\u76f8\u5bfe\u682a\u4fa1\uff08\u958b\u59cb=100\uff09"},"gridcolor":"#21262d"},"font":{"color":"#e6edf3"},"margin":{"t":60,"b":60,"l":60,"r":20},"legend":{"bgcolor":"#21262d","bordercolor":"#30363d"},"paper_bgcolor":"#161b22","plot_bgcolor":"#0d1117","height":400,"hovermode":"x unified"},                        {"displayModeBar": false, "responsive": true}                    )                };            </script>        </div>
+  </div>
+
+  <h2>📋 全銘柄スコア一覧</h2>
+  <div class="table-wrap">
+    
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>銘柄</th><th>情報源</th>
+          <th>テクニカル</th><th>ファンダ</th><th>センチメント</th><th>リスク</th>
+          <th>総合</th><th>判定</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>1631.T</strong><br><span style="color:#8b949e;font-size:0.8rem">NEXT FUNDS TOPI</span></td>
+        <td><span class="source-badge source-us_sector">🇺🇸 米セクター</span></td>
+        <td style="color:#e3b341">6.3</td>
+        <td style="color:#f85149">4.3</td>
+        <td style="color:#e3b341">5.0</td>
+        <td style="color:#3fb950">7.9</td>
+        <td><strong style="color:#ffeb3b">5.9</strong></td>
+        <td><span class="score-badge" style="background:#ffeb3b22;color:#ffeb3b">中立</span></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>1620.T</strong><br><span style="color:#8b949e;font-size:0.8rem">NEXT FUNDS TOPI</span></td>
+        <td><span class="source-badge source-us_sector">🇺🇸 米セクター</span></td>
+        <td style="color:#e3b341">5.3</td>
+        <td style="color:#f85149">4.3</td>
+        <td style="color:#e3b341">5.0</td>
+        <td style="color:#3fb950">8.7</td>
+        <td><strong style="color:#ffeb3b">5.8</strong></td>
+        <td><span class="score-badge" style="background:#ffeb3b22;color:#ffeb3b">中立</span></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>AAPL</strong><br><span style="color:#8b949e;font-size:0.8rem">Apple Inc.</span></td>
+        <td><span class="source-badge source-congress">🏛️ 議員取引</span></td>
+        <td style="color:#e3b341">5.1</td>
+        <td style="color:#f85149">4.2</td>
+        <td style="color:#f85149">4.7</td>
+        <td style="color:#3fb950">8.7</td>
+        <td><strong style="color:#ffeb3b">5.7</strong></td>
+        <td><span class="score-badge" style="background:#ffeb3b22;color:#ffeb3b">中立</span></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>1624.T</strong><br><span style="color:#8b949e;font-size:0.8rem">NEXT FUNDS TOPI</span></td>
+        <td><span class="source-badge source-us_sector">🇺🇸 米セクター</span></td>
+        <td style="color:#e3b341">6.7</td>
+        <td style="color:#f85149">3.3</td>
+        <td style="color:#e3b341">5.0</td>
+        <td style="color:#3fb950">7.3</td>
+        <td><strong style="color:#ffeb3b">5.7</strong></td>
+        <td><span class="score-badge" style="background:#ffeb3b22;color:#ffeb3b">中立</span></td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>1627.T</strong><br><span style="color:#8b949e;font-size:0.8rem">NEXT FUNDS TOPI</span></td>
+        <td><span class="source-badge source-us_sector">🇺🇸 米セクター</span></td>
+        <td style="color:#f85149">4.9</td>
+        <td style="color:#f85149">4.9</td>
+        <td style="color:#e3b341">5.0</td>
+        <td style="color:#3fb950">7.5</td>
+        <td><strong style="color:#ffeb3b">5.6</strong></td>
+        <td><span class="score-badge" style="background:#ffeb3b22;color:#ffeb3b">中立</span></td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>1633.T</strong><br><span style="color:#8b949e;font-size:0.8rem">NEXT FUNDS TOPI</span></td>
+        <td><span class="source-badge source-us_sector">🇺🇸 米セクター</span></td>
+        <td style="color:#e3b341">5.5</td>
+        <td style="color:#f85149">3.7</td>
+        <td style="color:#e3b341">5.0</td>
+        <td style="color:#e3b341">6.9</td>
+        <td><strong style="color:#ffeb3b">5.3</strong></td>
+        <td><span class="score-badge" style="background:#ffeb3b22;color:#ffeb3b">中立</span></td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td><strong>NVDA</strong><br><span style="color:#8b949e;font-size:0.8rem">NVIDIA Corporat</span></td>
+        <td><span class="source-badge source-congress">🏛️ 議員取引</span></td>
+        <td style="color:#f85149">3.7</td>
+        <td style="color:#e3b341">6.5</td>
+        <td style="color:#f85149">4.5</td>
+        <td style="color:#f85149">4.7</td>
+        <td><strong style="color:#ffeb3b">4.8</strong></td>
+        <td><span class="score-badge" style="background:#ffeb3b22;color:#ffeb3b">中立</span></td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td><strong>6838.T</strong><br><span style="color:#8b949e;font-size:0.8rem">Tamagawa Holdin</span></td>
+        <td><span class="source-badge source-minkabu">🇯🇵 みんかぶ</span></td>
+        <td style="color:#e3b341">5.5</td>
+        <td style="color:#f85149">3.9</td>
+        <td style="color:#e3b341">5.0</td>
+        <td style="color:#f85149">3.9</td>
+        <td><strong style="color:#ffeb3b">4.6</strong></td>
+        <td><span class="score-badge" style="background:#ffeb3b22;color:#ffeb3b">中立</span></td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td><strong>AMZN</strong><br><span style="color:#8b949e;font-size:0.8rem">Amazon.com, Inc</span></td>
+        <td><span class="source-badge source-congress">🏛️ 議員取引</span></td>
+        <td style="color:#f85149">3.7</td>
+        <td style="color:#e3b341">5.5</td>
+        <td style="color:#f85149">3.8</td>
+        <td style="color:#e3b341">5.1</td>
+        <td><strong style="color:#ffeb3b">4.5</strong></td>
+        <td><span class="score-badge" style="background:#ffeb3b22;color:#ffeb3b">中立</span></td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td><strong>AMD</strong><br><span style="color:#8b949e;font-size:0.8rem">Advanced Micro </span></td>
+        <td><span class="source-badge source-congress">🏛️ 議員取引</span></td>
+        <td style="color:#e3b341">5.5</td>
+        <td style="color:#f85149">3.8</td>
+        <td style="color:#e3b341">5.4</td>
+        <td style="color:#f85149">2.9</td>
+        <td><strong style="color:#ffeb3b">4.4</strong></td>
+        <td><span class="score-badge" style="background:#ffeb3b22;color:#ffeb3b">中立</span></td>
+      </tr>
+      <tr>
+        <td>11</td>
+        <td><strong>7084.T</strong><br><span style="color:#8b949e;font-size:0.8rem">Smile Holdings </span></td>
+        <td><span class="source-badge source-minkabu">🇯🇵 みんかぶ</span></td>
+        <td style="color:#f85149">4.9</td>
+        <td style="color:#f85149">2.4</td>
+        <td style="color:#e3b341">5.0</td>
+        <td style="color:#f85149">3.7</td>
+        <td><strong style="color:#ffeb3b">4.0</strong></td>
+        <td><span class="score-badge" style="background:#ffeb3b22;color:#ffeb3b">中立</span></td>
+      </tr>
+      <tr>
+        <td>12</td>
+        <td><strong>3559.T</strong><br><span style="color:#8b949e;font-size:0.8rem">p-ban.com Corp.</span></td>
+        <td><span class="source-badge source-minkabu">🇯🇵 みんかぶ</span></td>
+        <td style="color:#f85149">4.9</td>
+        <td style="color:#f85149">4.0</td>
+        <td style="color:#e3b341">5.0</td>
+        <td style="color:#f85149">1.7</td>
+        <td><strong style="color:#ff7043">3.9</strong></td>
+        <td><span class="score-badge" style="background:#ff704322;color:#ff7043">売り</span></td>
+      </tr>
+      <tr>
+        <td>13</td>
+        <td><strong>TSLA</strong><br><span style="color:#8b949e;font-size:0.8rem">Tesla, Inc.</span></td>
+        <td><span class="source-badge source-congress">🏛️ 議員取引</span></td>
+        <td style="color:#f85149">2.9</td>
+        <td style="color:#f85149">2.4</td>
+        <td style="color:#e3b341">5.9</td>
+        <td style="color:#f85149">2.7</td>
+        <td><strong style="color:#ff7043">3.3</strong></td>
+        <td><span class="score-badge" style="background:#ff704322;color:#ff7043">売り</span></td>
+      </tr>
+      <tr>
+        <td>14</td>
+        <td><strong>2586.T</strong><br><span style="color:#8b949e;font-size:0.8rem">Fruta Fruta Inc</span></td>
+        <td><span class="source-badge source-minkabu">🇯🇵 みんかぶ</span></td>
+        <td style="color:#f85149">4.9</td>
+        <td style="color:#f85149">1.5</td>
+        <td style="color:#e3b341">5.0</td>
+        <td style="color:#f85149">1.7</td>
+        <td><strong style="color:#ff7043">3.3</strong></td>
+        <td><span class="score-badge" style="background:#ff704322;color:#ff7043">売り</span></td>
+      </tr>
+      <tr>
+        <td>15</td>
+        <td><strong>6634.T</strong><br><span style="color:#8b949e;font-size:0.8rem">JN Group Inc.</span></td>
+        <td><span class="source-badge source-minkabu">🇯🇵 みんかぶ</span></td>
+        <td style="color:#f85149">4.1</td>
+        <td style="color:#f85149">2.5</td>
+        <td style="color:#e3b341">5.0</td>
+        <td style="color:#f85149">0.7</td>
+        <td><strong style="color:#ff7043">3.0</strong></td>
+        <td><span class="score-badge" style="background:#ff704322;color:#ff7043">売り</span></td>
+      </tr></tbody>
+    </table>
+  </div>
+
+  <h2>🔍 個別銘柄詳細分析</h2>
+  
+  <details>
+    <summary>
+      <span><strong>1631.T</strong> &nbsp; NEXT FUNDS TOPIX-17 BANKS ETF</span>
+      <span style="color:#ffeb3b">総合: 5.9 / 中立</span>
+    </summary>
+    <div class="detail-content">
+      <div class="agent-grid">
+          <div class="agent-card">
+            <div class="agent-name">📈 テクニカル分析</div>
+            <div class="agent-score" style="color:#e3b341">6.3<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">1631.T（日経225先物）は37890円で推移。強気の基本構造は維持されており、価格がSMA20（36429.50）から4.0%上、SMA200から27.2%上と明確な上昇トレンド中。SMA20 > SMA50 > SMA200のパーフェクトオーダーが確立され、中長期の上昇モメンタムは健全。ただしRSI 65.9は買われすぎゾーン手前で天井警戒段階、MACD強気だが価格上昇に対するRSIの伸び悩みはダイバージェンスの危険信号。アッパーバンド（38338.88）への接近で調整リスク意識が必要。</div>
+            <ul class="key-points"><li>パーフェクトオーダー継続でトレンド構造は健全だが、RSI65.9の高値警戒ゾーン入りで短期調整リスク増大</li><li>MACD強気クロス継続（914.8445 > シグナル826.6562）でトレンドフォロー指標は一致するも、価格とRSIの乖離（弱気ダイバージェンス予兆）が注意点</li><li>アッパーバンド38338.88は直近レジスタンス。38500突破で新高値へ、割れるとSMA20サポートへ38000-38200の調整局面に転換の可能性</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💼 ファンダメンタル分析</div>
+            <div class="agent-score" style="color:#e3b341">4.3<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">本銘柄はTOPIX-17 BANKS ETFであり、個別企業ではなく銀行セクター指数連動の投資信託です。配当利回り241%は異常値で、データ算出エラーと考えられます。PER17.5倍は日本銀行セクター平均と比較してやや割高水準。ETFの本質的価値は構成銘柄の質に依存しますが、日本銀行業界は低金利環境での利ザヤ圧縮、デジタル化競争など構造的課題を抱えています。個別企業分析ができない投資信託型であり、セクター全体の見通しが重要です。</div>
+            <ul class="key-points"><li>PER17.5倍は日本銀行セクターではやや割高</li><li>配当利回り241%は明らかなデータエラー（ETFの実配当利回りを別途確認必須）</li><li>銀行セクターの構造的課題：利ザヤ圧縮、デジタル化投資負荷が課題</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💬 センチメント分析</div>
+            <div class="agent-score" style="color:#e3b341">5.0<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">銘柄1631.T（日本取引所グループ）について、直近ニュースが報告されていません。ポジティブ・ネガティブキーワードの検出数がともにゼロであり、市場センチメントを判断する十分な情報材料がない状態です。この場合、投資家心理は中立的と判断され、既存の株価水準が市場均衡点を示唆しています。今後の決算発表や経営方針の変更など、新規情報の開示を待つ局面と考えられます。</div>
+            <ul class="key-points"><li>直近ニュース件数がゼロ：センチメント判断に必要な新規情報材料が不足</li><li>キーワード分析で買値・売値シグナル未検出：市場参加者の方向性が不明確</li><li>中立スコア継続中：既存トレンドの継続または次の情報開示まで変化なしと予想</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">⚠️ リスク分析</div>
+            <div class="agent-score" style="color:#3fb950">7.9<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">1631.T（日本ハム）は年率68%の高リターンを達成しながら、ベータ0.07という極めて低い市場感応度を維持しており、市場全体の変動から独立した価格形成が特徴です。年率ボラティリティ29.8%は中程度ですが、最大ドローダウン-19.3%に留まる点と、シャープレシオ2.28という優秀なリスク調整後リターンが強みです。ただし日次VaR-2.70%は相応のテールリスク存在を示唆しており、短期的な価格変動には注意が必要。食品セクターの景気防御性と企業固有の業績改善が低ベータを実現していると考えられます。</div>
+            <ul class="key-points"><li>ベータ0.07という極度の低感応性：市場リスク遮断が強力だが、市場上昇時の恩恵も限定的</li><li>日次VaR-2.70%：100営業日に約5日は2.70%超の日次損失リスク、短期変動性への留意が必要</li><li>シャープレシオ2.28：優秀なリスク調整後リターンだが、68%高リターンの持続可能性評価が重要</li></ul>
+          </div></div>
+    </div>
+  </details>
+  <details>
+    <summary>
+      <span><strong>1620.T</strong> &nbsp; NEXT FUNDS TOPIX-17 RAW MATERIALS & CHEMICALS ETF</span>
+      <span style="color:#ffeb3b">総合: 5.8 / 中立</span>
+    </summary>
+    <div class="detail-content">
+      <div class="agent-grid">
+          <div class="agent-card">
+            <div class="agent-name">📈 テクニカル分析</div>
+            <div class="agent-score" style="color:#e3b341">5.3<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">1620.T（日経225）は現在、中立から弱気への転換局面にあります。RSI58.2は中立圏内で買われすぎの兆候はありませんが、MACDは弱気クロス直後の状態（ヒストグラム-32.01でマイナス転化）で下落モメンタムが生じています。価格は3本の移動平均線を上回る強気ポジションにあるものの、短期勢いの減退が明らかです。ボリンジャーバンドの中央値より上にあり、上限までの余裕もありますが、MACDの弱気ダイバージェンスが注視点となります。</div>
+            <ul class="key-points"><li>MACDが弱気クロスへ転換：シグナルラインをヒストグラムが下抜け、下落圧力が強まっている段階</li><li>RSI58.2は中立だが下向き：買われすぎ警戒圏まで上昇する余地は限定的</li><li>移動平均線は強気配置（20>50>200）維持：長期トレンドは上昇も、短期の方向感喪失が懸念</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💼 ファンダメンタル分析</div>
+            <div class="agent-score" style="color:#e3b341">4.3<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">本銘柄はETF（上場投信）であり、通常の個別企業分析の対象外です。TOPIX-17（素材・化学セクター）への連動を目指すパッシブ運用商品のため、PER19.9倍は構成銘柄群の現況を反映しています。異常に高い配当利回り198%は配当構成の特異性（おそらく分配金が基準価額に対して過度に多い）を示唆し、持続不可能な可能性が高い。個別企業のような成長性・経営品質の評価ではなく、セクター選択と分配利回りの持続性が判断軸となるべきです。</div>
+            <ul class="key-points"><li>ETF商品のため個別企業分析不適切：セクター全体のPER19.9倍が基盤</li><li>配当利回り198%は異常値：分配金の持続可能性を要確認（償還リスク注視）</li><li>素材・化学セクターの景気循環性：業界PER水準との相対評価が重要</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💬 センチメント分析</div>
+            <div class="agent-score" style="color:#e3b341">5.0<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">銘柄1620.T（日立金属）の直近ニュースが報道されていない状況です。ポジティブ・ネガティブどちらのキーワードも検出されておらず、市場の注目度が低い可能性があります。新たなニュースリリースや決算発表などの重要イベント待ちの状態と考えられます。投資判断には過去の業績トレンドや決算予定日の確認が必要です。</div>
+            <ul class="key-points"><li>直近ニュースリリースなし</li><li>市場情報の不足による中立評価</li><li>決算発表などの重要イベント待ちの可能性</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">⚠️ リスク分析</div>
+            <div class="agent-score" style="color:#3fb950">8.7<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">銘柄1620.T（日本プロロジスリート投資法人）は年率40%の高いリターンを実現しながら、市場との相関が極めて低い（β=0.05）という特異な特性を示しています。ボラティリティ20.6%は標準的範囲で、最大ドローダウン-12.5%と小幅に留まり、シャープレシオ1.94は優れたリスク調整後リターンを示唆しています。ただし、日次VaR-2.14%は標準的リスク指標より上振れており、尾部リスクへの注意が必要です。REITの性質上、金利上昇リスク、分配金利回り低下リスク、不動産市況変動への依存性があり、完全なローリスク商品ではありません。現在の高リターンが継続するかは市場環境に左右されます。</div>
+            <ul class="key-points"><li>市場相関が極めて低い（β=0.05）：分散ポートフォリオの構成要素として有効だが、上昇相場での相対的な利益機会喪失リスク</li><li>金利上昇リスク：REITは金利感応度が高く、日銀政策転換や長期金利上昇で価格が急変する可能性</li><li>日次VaR-2.14%：100日に5日程度は2%以上の日次損失を被る可能性があり、短期的な値動きは標準的リスク水準より高い</li></ul>
+          </div></div>
+    </div>
+  </details>
+  <details>
+    <summary>
+      <span><strong>AAPL</strong> &nbsp; Apple Inc.</span>
+      <span style="color:#ffeb3b">総合: 5.7 / 中立</span>
+    </summary>
+    <div class="detail-content">
+      <div class="agent-grid">
+          <div class="agent-card">
+            <div class="agent-name">📈 テクニカル分析</div>
+            <div class="agent-score" style="color:#e3b341">5.1<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">AAPLは中立的なテクニカル環境にあります。RSI52.2は50ラインをやや上回る中立圏で、買われすぎ/売られすぎの兆候は見られません。しかし懸念点としてMACDがネガティブで、MACDライン1.74がシグナル4.36を下回り、ヒストグラムが-2.62で弱気シグナルを示しています。一方、移動平均線は良好で、SMA20 > SMA50 > SMA200の配置により上昇トレンド構造は維持されています。価格はSMA20をやや下回っていますが、ボリンジャーバンド内での正常な値動きです。短期的には調整局面の可能性があり、MACDの回復待ちが必要です。</div>
+            <ul class="key-points"><li>MACDが弱気シグナル：ライン<シグナルで、ヒストグラムが負値。短期的な上昇モメンタムが減速中</li><li>移動平均線は堅調：SMA20>SMA50>SMA200の正序維持で、中期上昇トレンドは継続。SMA200から+12%の高位置</li><li>RSI中立圏：52.2は特定の方向性を示さず、価格が現在のレンジで迷っている可能性。MACDの回復まで様子見推奨</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💼 ファンダメンタル分析</div>
+            <div class="agent-score" style="color:#e3b341">4.2<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">Appleは優れた収益性（ROE141%、営業利益率32%）と強い売上成長（16.6%）を示していますが、バリュエーション面で深刻な過剰評価が見られます。トレーリングPER36.2倍、PBR41倍は業界水準を大きく上回り、成長期待に見合わない割高さです。配当利回り36%は異常値（データ精度の確認推奨）。財務面では負債比率79.55が極めて高く、流動比率1.07は短期流動性リスクを示唆。強力なビジネスモデルですが、現株価では新規投資の魅力に欠けます。</div>
+            <ul class="key-points"><li>トレーリングPER36.2倍は過度に割高。フォワードPER31.2倍も高成長期待が過度に織り込まれている懸念</li><li>PBR41倍は異常。ROE141%は高いが、株価上昇が利益成長を大きく上回っている</li><li>負債自己資本比率79.55は極めて高く、財務リスクが無視できない水準。流動比率1.07は要監視</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💬 センチメント分析</div>
+            <div class="agent-score" style="color:#e3b341">4.7<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">本日のAAPLに関するニュースは混在したセンチメントを示しています。ポジティブ面では、AI搭載AirPodsと折りたたみiPhone発表予定（2027年）というイノベーション期待が報道されています。一方、ネガティブ面ではイタリアのDMA規制調査、テック セクター全体の軟調（午後に売却圧力）、AI進展にもかかわらず株価下落という逆説的な動きが見られます。本日は指数が記録高を更新する中、AAPLを含むテック銘柄が相対的に弱調で、市場のセクター・ローテーション（銀行・工業株へのシフト）が影響している状況です。中期的な成長期待と短期的な規制リスクが相殺されている中立的なセンチメントです。</div>
+            <ul class="key-points"><li>イタリアDMA規制調査によるクラウド相互運用性問題の懸念</li><li>2027年のAI AirPods・折りたたみiPhone上市計画による中期成長期待</li><li>本日テック セクター全体の軟調でAAPLも売却圧力（銀行・工業株へのセクター・ローテーション）</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">⚠️ リスク分析</div>
+            <div class="agent-score" style="color:#3fb950">8.7<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">AAPLは年率ボラティリティ22.7%で市場平均的な価格変動性を示し、最大ドローダウン-13.8%は限定的です。ベータ0.89は市場より安定的な値動きを意味します。シャープレシオ2.02は優れたリスク調整後リターンを示唆しており、95% VaR -1.91%は日次リスクが管理範囲内です。年率45.8%の高いリターンを中程度のリスクで達成している点が評価でき、大型テック企業としての安定性が反映されています。ただしテック業界の規制リスクと金利感応度への留意が必要です。</div>
+            <ul class="key-points"><li>ボラティリティ22.7%は標準的で中程度リスク、テック大型株としては安定的な価格推移</li><li>最大ドローダウン-13.8%は限定的で弱気相場での損失リスクが相対的に小さい</li><li>シャープレシオ2.02は優良で、高いリターンを効率的に獲得している</li></ul>
+          </div></div>
+    </div>
+  </details>
+  <details>
+    <summary>
+      <span><strong>1624.T</strong> &nbsp; NEXT FUNDS TOPIX-17 MACHINERY ETF</span>
+      <span style="color:#ffeb3b">総合: 5.7 / 中立</span>
+    </summary>
+    <div class="detail-content">
+      <div class="agent-grid">
+          <div class="agent-card">
+            <div class="agent-name">📈 テクニカル分析</div>
+            <div class="agent-score" style="color:#e3b341">6.7<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">1624.T（日本上場企業）は現在、強気と中立のシグナルが混在する状態です。移動平均線は全て上向きで、SMA20>SMA50>SMA200の準パーフェクトオーダー（SMA20が中央値と同値）が形成されており、中期上昇トレンドは健全です。RSI56.7は適温ゾーン（50-70）で強気寄りながら買われすぎには至っていません。価格は現在SMA20を4.1%上回り、SMA50を1.6%上回っており、短期の上昇モメンタムが続いています。ただしMACDはマイナス領域にあり、シグナルラインより上にあるもののゼロラインクロスが直近のサインではなく、強気転換がまだ完全ではありません。価格は中央値86381.50に比べて4.3%上昇し、アッパーバンド90279.30まで約390円の余裕がある状態で、ボラティリティは正常範囲内です。全体的には調整局面を脱した上昇トレンドの継続が期待でき、中程度の買い優位と判断します。</div>
+            <ul class="key-points"><li>SMA20>SMA50>SMA200の序列維持で中期上昇トレンド健全。価格はSMA20を4.1%上回る</li><li>RSI56.7は適温ゾーンで買われすぎなし。一層の上昇余地あり</li><li>MACDはマイナス領域ながらシグナルラインより上で、ゼロライン到達でより強気確認が期待される</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💼 ファンダメンタル分析</div>
+            <div class="agent-score" style="color:#f85149">3.3<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">本銘柄はTOPIX-17機械セクターETFであり、個別企業ではなく投資信託商品です。そのため、従来のファンダメンタル分析は適用不適切です。トレーリングPER27.1倍は機械セクター平均より割高傾向。配当利回り324%は異常値で、おそらくETF決算時の分配金計上に起因する数値の歪みと考えられます。個別企業指標（ROE、売上成長率、財務比率）が全て開示されていないのはETF特性です。投資判断には構成銘柄の質、セクター見通し、信託報酬等を別途検討する必要があります。</div>
+            <ul class="key-points"><li>ETFであり個別企業分析の枠組みが不適用</li><li>機械セクターPER27.1倍は割高基調（成長期待反映の可能性）</li><li>配当利回り324%は異常値・データ信頼性に疑問</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💬 センチメント分析</div>
+            <div class="agent-score" style="color:#e3b341">5.0<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">銘柄1624.T（日本マクドナルド）について直近のニュースが検出されていません。ニュース件数ゼロの状態では、ポジティブ・ネガティブな材料が不足しており、市場センチメントを判断する根拠がありません。この場合、投資家心理は中立的であると考えられます。ただし、ニュース空白期間が続く場合、材料待ちの局面である可能性があります。決算発表や経営情報の公開タイミングを確認することをお勧めします。</div>
+            <ul class="key-points"><li>直近ニュースなし - 情報不足による中立評価</li><li>ポジティブ・ネガティブキーワード検出なし</li><li>市場センチメント判断の材料不足</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">⚠️ リスク分析</div>
+            <div class="agent-score" style="color:#3fb950">7.3<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">1624.T（日本国債ETF）は年率ボラティリティ30.7%と一見高いものの、TOPIXに対するベータ0.09と極めて低く、市場変動の影響をほぼ受けない防御的な資産特性を示しています。最大ドローダウン-18.0%は限定的で、シャープレシオ1.48は良好なリスク調整後リターンを実現。95% VaR -2.67%は標準的範囲内です。ボラティリティの高さは主に金利変動による価格変動であり、株式市場のリスクとは異質。年率リターン45.6%は異常に高く、データ期間内の特殊な金利環境（おそらく円安・金利上昇局面）を反映しており、持続可能性に疑問があります。低ベータと限定的ドローダウンが評価を支え、ポートフォリオヘッジ手段として有用ですが、将来のリターン期待値の低下リスクを考慮し、スコアを若干下方修正しました。</div>
+            <ul class="key-points"><li>極低ベータ0.09：市場変動との相関がほぼゼロで、分散投資効果が非常に高い</li><li>ボラティリティ30.7%は金利リスク由来：株価リスクとは異質で、ドローダウンは限定的</li><li>年率リターン45.6%は異常値：金利環境の特殊性による一時的高騰の可能性が高い</li></ul>
+          </div></div>
+    </div>
+  </details>
+  <details>
+    <summary>
+      <span><strong>1627.T</strong> &nbsp; NEXT FUNDS TOPIX-17 ELECTRIC POWER & GAS ETF</span>
+      <span style="color:#ffeb3b">総合: 5.6 / 中立</span>
+    </summary>
+    <div class="detail-content">
+      <div class="agent-grid">
+          <div class="agent-card">
+            <div class="agent-name">📈 テクニカル分析</div>
+            <div class="agent-score" style="color:#e3b341">4.9<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">1627.T（日経平均）は中立的な状況にあります。RSI43.3は中立ゾーン（30-70）の下部にあり、売られすぎまで至っていません。MACDはネガティブ領域で両線とも負値ですが、ヒストグラムが31.0772とプラスで縮小傾向は緩和されています。移動平均線を見ると、短期SMA20がSMA200に近く（差わずか-0.7%）、中期トレンドは弱いものの長期トレンドとの乖離は小さい状態です。ただしSMA50との距離が-4.7%と乖離が拡大し、中期的な下落圧力が残存。価格がボリンジャーバンド中央付近で推移しており、ボラティリティは平常。現在は方向性定まらず、上値SMA50抜け、または下値SMA200割れを待つ局面と判断します。</div>
+            <ul class="key-points"><li>RSI43.3は中立ゾーン下部で買いシグナルは不十分。反発余地は限定的</li><li>MACDヒストグラムがプラスで縮小傾向だが、両線ネガティブで下落圧力は継続中</li><li>SMA50（11963.30）との距離が-4.7%と最大乖離で、この戻り抵抗が重い。この水準抜けが上昇の鍵</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💼 ファンダメンタル分析</div>
+            <div class="agent-score" style="color:#e3b341">4.9<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">本銘柄はETFであり、個別企業分析の通常フレームワークは適用できません。電力・ガス株の詰め合わせ商品として機能します。表面的な配当利回り118%は極めて異常で、おそらくETF分配金の計算ミスまたは一時的な乖離現象と考えられます。PER7.7倍は電力セクターの本来の割安度を反映していますが、ETF保有による追加費用（信託報酬）と実際のキャッシュフロー分配の乖離に注意が必要です。個別企業ではなくセクター投資商品であり、基礎となる構成銘柄の業績悪化リスク（エネルギー転換、規制強化）が存在します。</div>
+            <ul class="key-points"><li>配当利回り118%は異常値・要検証（ETF分配金計算の確認必須）</li><li>PER7.7倍は電力セクターの歴史的割安を反映（規制産業のため低成長）</li><li>ETF商品のため個別企業分析不可・信託報酬コストと構成銘柄リスク確認が重要</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💬 センチメント分析</div>
+            <div class="agent-score" style="color:#e3b341">5.0<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">銘柄1627.T（日立造船）について、直近のニュースが報告されていない状況です。ポジティブ・ネガティブなキーワードも検出されておらず、市場からの新規情報がない状態と考えられます。この場合、既存の株価は現状の企業価値認識に基づいており、新しいセンチメント変化は見られません。投資判断には過去数週間のニュースアーカイブ、決算時期、業界動向などの確認が必要です。</div>
+            <ul class="key-points"><li>直近ニュースなし：新規情報による市場反応が観測できない状態</li><li>キーワード検出なし：ポジティブ・ネガティブな材料が報告されていない</li><li>情報不足による中立評価：センチメント判断には追加情報が必要</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">⚠️ リスク分析</div>
+            <div class="agent-score" style="color:#3fb950">7.5<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">1627.T（日本銀行のETF）は市場環動性から大きく乖離した独特なリスク特性を示しています。ベータ0.03という極めて低い市場感応度と-14.6%の小さなドローダウンは、債券・金利関連資産としての安定性を反映しています。年率25.2%のボラティリティは一見高いですが、これは金利変動周期に由来し、市場下落時の保護機能を示唆します。シャープレシオ1.53と38.5%のリターンは優良ですが、金利正常化局面では逆風となる可能性があります。VaR-2.53%は標準的で許容範囲内です。</div>
+            <ul class="key-points"><li>ベータ0.03：市場中立的で分散効果が高い。株式市場下落時の保護機能を提供</li><li>金利リスク：日銀政策正常化時には逆イールド化で価値下落リスクあり</li><li>ボラティリティと安定性の乖離：金利変動による変動性が高い割に価格下落は抑制的</li></ul>
+          </div></div>
+    </div>
+  </details>
+  <details>
+    <summary>
+      <span><strong>1633.T</strong> &nbsp; NEXT FUNDS TOPIX-17 REAL ESTATE ETF</span>
+      <span style="color:#ffeb3b">総合: 5.3 / 中立</span>
+    </summary>
+    <div class="detail-content">
+      <div class="agent-grid">
+          <div class="agent-card">
+            <div class="agent-name">📈 テクニカル分析</div>
+            <div class="agent-score" style="color:#e3b341">5.5<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">銘柄1633.Tは中立的なポジションにあります。RSI47.6は50ラインより下で弱気寄り。MACDはヒストグラムが正値に転じて弱い回復兆候を示していますが、シグナルラインより下で完全な強気転換とは言えません。価格はSMA20をわずかに上回りますが、SMA50・SMA200を下回り、中期・長期で弱い配置。ボリンジャーバンドの中央線付近での推移は方向性の定まりづらさを示唆しています。短期的なサポートはSMA20（50627円）、抵抗はSMA200（52953円）と考えられます。</div>
+            <ul class="key-points"><li>RSI47.6は50ラインを割り込み、弱気寄りだが極度の売られすぎではない</li><li>MACDヒストグラムが正値で拡大傾向だが、シグナルとのクロスには至らず中途半端</li><li>価格がSMA20より上だが、SMA50（-5.4%）を大きく下回る弱気配置が継続中</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💼 ファンダメンタル分析</div>
+            <div class="agent-score" style="color:#f85149">3.7<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">本銘柄はTOPIX-17連動のREIT ETFであり、個別企業ではなく上場投信です。配当利回り235%は極めて異常であり、分配金再投資制度の誤表記または法的問題の可能性が高い。通常のREIT ETFの配当利回りは3-5%程度です。トレーリングPER 15.7倍は不動産セクター平均並みですが、このデータの信頼性が疑わしい。REITの本質的価値評価には配当利回りではなく分配利回りや純資産価値（NAV）が必須ですが、提供されていません。ファンダメンタル分析の大半が欠落しており、投資判断不可能な状態です。</div>
+            <ul class="key-points"><li>配当利回り235%は明らかに異常値（通常3-5%程度）</li><li>ETF商品のため個別企業分析が不適用。NAV・分配利回りが必要</li><li>PBR・ROE等の主要指標が全て欠落しており信頼度が極めて低い</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💬 センチメント分析</div>
+            <div class="agent-score" style="color:#e3b341">5.0<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">銘柄1633.T（日本テレビホールディングス）の直近ニュースが報告されていません。ニュースヘッドライン件数がゼロであり、ポジティブ・ネガティブワード検出も0件です。情報が不足しているため、センチメント分析は実施できません。投資判断の際は、業績発表スケジュール、アナリスト評価、業界トレンド、マクロ経済環境など別途情報源による補完が必要です。</div>
+            <ul class="key-points"><li>直近ニュースが報告されていない状態</li><li>ポジティブ・ネガティブ双方のシグナル検出なし</li><li>追加情報の収集が必要（決算日程、業績予想など）</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">⚠️ リスク分析</div>
+            <div class="agent-score" style="color:#e3b341">6.9<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">1633.T（日本プロロジスティクス投資法人）は年率27.8%のリターンを実現しながら、ベータ0.06という極めて低い市場感応度が特徴です。26.7%のボラティリティは中程度ですが、TOPIXとの低相関により市場下落時の守備力が強いと考えられます。最大ドローダウン-25.5%は許容可能な範囲内で、シャープレシオ1.04は標準的なリスク調整後リターン効率を示唆しています。ただし日次VaR-2.60%は標準的な株式リスク水準を示す点に注意。J-REITセクターの金利感応度とインフレ懸念が潜在的な下振れリスク要因です。</div>
+            <ul class="key-points"><li>ベータ0.06の極低感応度：市場下落時の相対的な耐性が強く、ポートフォリオの安定化効果が期待される</li><li>日次VaR-2.60%：100営業日中5日は2.6%以上の日次損失が発生する可能性があり、短期的変動リスクは無視できない</li><li>金利・インフレリスク：J-REITは金利上昇局面で評価減圧力を受けやすく、マクロリスク環境の変化に留意が必要</li></ul>
+          </div></div>
+    </div>
+  </details>
+  <details>
+    <summary>
+      <span><strong>NVDA</strong> &nbsp; NVIDIA Corporation</span>
+      <span style="color:#ffeb3b">総合: 4.8 / 中立</span>
+    </summary>
+    <div class="detail-content">
+      <div class="agent-grid">
+          <div class="agent-card">
+            <div class="agent-name">📈 テクニカル分析</div>
+            <div class="agent-score" style="color:#f85149">3.7<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">NVDAは短期的な弱気シグナルが優位。RSI47.5は中立だが、MACD(-0.8977)がシグナル線(0.5341)を大きく下回り、ヒストグラムが-1.4318と売りトレンド継続中。価格は前日比-2.37%で下落し、SMA20を2.7%下回っている。一方、SMA200比+9.5%の上昇位置とSMA20>SMA50>SMA200の順序は中期的なアップトレンド構造を保持。ボリンジャーバンドでは中央値近辺で安定しており、極度の売られすぎではない。調整局面の可能性が高い。</div>
+            <ul class="key-points"><li>MACD弱気クロスが継続中で売り圧力が強い。ヒストグラムの回復待ちが必要</li><li>SMA構造は上昇トレンドを維持しているが、短期移動平均(SMA20)の下抜けが近い懸念あり</li><li>RSIが50ラインを下回り中立から弱気へシフト。30以下へのさらなる低下リスク注視</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💼 ファンダメンタル分析</div>
+            <div class="agent-score" style="color:#e3b341">6.5<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">NVDAは極めて高い収益性（ROE114%、営業利益率65.6%）と爆発的な売上成長（85.2%）で業界をリードしている。ただしトレーリングPER31.8倍は割高で、配当利回り47%は異常値（換算ミスの可能性）。PBR25.7倍は極めて高いが、デュポン分析ではこれを正当化する圧倒的な資本効率がある。重要なのはフォワードPER16.3倍とEPS96%成長予想で、来期の評価では割安に転じる。D/E6.55は高いが、強力なキャッシュフロー生成力で健全性は懸念薄。生成AI需要の継続が前提だが、成長の質と持続性の確度が高い。</div>
+            <ul class="key-points"><li>フォワードPER16.3倍：来期の大幅増益で適正水準に改善見通し</li><li>ROE114%：究極の資本効率。競争優位性の最強指標</li><li>売上高成長85%+EPS二桁成長：グロース企業としての実績が明確</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💬 センチメント分析</div>
+            <div class="agent-score" style="color:#e3b341">4.5<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">NVDAに関する直接的なニュースは限定的で、「Nasdaq主導の下落」や「他社との比較検討」という文脈から弱気シグナルが読み取れます。ヘッドラインの大半がSpaceX IPOやTeslaのAI5チップなど競合企業の進展に集中しており、NVDAの成長ストーリーが一時的に市場の関心から外れている状況を示唆しています。決算情報や製品アップデートなど実質的なポジティブ材料に欠け、相対的な出遅れ感が生じている可能性があります。</div>
+            <ul class="key-points"><li>NVDAを含むNasdaq銘柄が6/16に下落基調</li><li>Tesla AI5チップ完成などAI競争激化による相対的なポジション低下</li><li>SpaceX IPO好況がAI関連の投資家関心をシフトさせている可能性</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">⚠️ リスク分析</div>
+            <div class="agent-score" style="color:#e3b341">4.7<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">NVDAは年率35.2%の高ボラティリティと1.85の高ベータを示し、市場変動への高感応性が特徴です。ただしMDD -20.2%は許容範囲内であり、シャープレシオ1.22は良好なリスク調整後リターンを示唆しています。95% VaR -3.64%は100日に5日程度の大幅下落リスクを意味し、注視が必要です。年率43%のリターンは高いものの、その達成にはボラティリティ受容が必須です。テクノロジー・AI関連銘柄の特性から、金利上昇時の調整リスク、競争環境の急速な変化、評価額の収縮リスクが存在します。成長性と安定性のバランスを考慮すると、中程度リスク水準が適切な評価です。</div>
+            <ul class="key-points"><li>ボラティリティ35.2%は高く、日々の価格変動が大きい。市場全体の変動の約1.85倍の感応度を示す</li><li>VaR -3.64%は高リスク域で、月1回程度は3%超の下落を経験する可能性。テールリスク管理が重要</li><li>シャープレシオ1.22とMDD -20.2%は相対的に優良で、リターン対リスクの効率性は良好。成長性の源泉は確認できる</li></ul>
+          </div></div>
+    </div>
+  </details>
+  <details>
+    <summary>
+      <span><strong>6838.T</strong> &nbsp; Tamagawa Holdings Co., Ltd.</span>
+      <span style="color:#ffeb3b">総合: 4.6 / 中立</span>
+    </summary>
+    <div class="detail-content">
+      <div class="agent-grid">
+          <div class="agent-card">
+            <div class="agent-name">📈 テクニカル分析</div>
+            <div class="agent-score" style="color:#e3b341">5.5<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">6838.Tは+21.28%の急騰後、技術的な過熱状態を示しています。RSI58.6は中立ゾーンで売られすぎではありませんが、MACDで重大な警告信号が発生：MACDが79.4のシグナルラインを大きく下回り、ヒストグラムが-45.5まで急速に縮小しており、強気から弱気への転換を示唆しています。一方、移動平均線はパーフェクトオーダー（SMA20>SMA50>SMA200）で上昇トレンドを維持。価格はSMA20から7.5%、SMA50から24.3%上位にあり、短期的には天井圏の可能性があります。出来高を伴わない急騰である懸念が残ります。</div>
+            <ul class="key-points"><li>MACD弱気ダイバージェンス：ヒストグラムが急速に負化(-45.5)。短期反転の強い警告信号</li><li>二つの相反するシグナル：移動平均は強気トレンド継続、MACDは弱気転換。調整を警戒</li><li>短期的な過買い圏：RSI58.6は中立ながら、SMA20から7.5%上昇。利確売り圧力の可能性高い</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💼 ファンダメンタル分析</div>
+            <div class="agent-score" style="color:#f85149">3.9<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">玉川ホールディングスは高成長（売上高成長率83%）と良好な利益率（営業利益率24%）が特徴です。しかし、トレーリングPER55.9倍は極めて割高で、配当利回り106%は異常値です。これは最近の急激な株価調整を示唆しており、配当維持可能性が不透明です。D/E比59.6は資本構造の問題を示唆し、EV/EBITDA14.6倍も高水準。成長期待が大きく織り込まれており、さらなる業績拡大が必須となります。流動比率2.87は良好ですが、財務リスクが潜在しています。</div>
+            <ul class="key-points"><li>トレーリングPER55.9倍は極度の割高。期待成長率の実現が絶対条件</li><li>配当利回り106%は異常。配当維持可能性と株価下落リスクを精査必須</li><li>売上高成長率83%は注目だが、持続性確認が最優先課題</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💬 センチメント分析</div>
+            <div class="agent-score" style="color:#e3b341">5.0<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">銘柄6838.T（日本ヒーター）について、直近ニュースが0件で、市場コンサーンスに関する具体的な情報が得られていません。ポジティブ・ネガティブキーワードも検出されておらず、市場の関心度が低い状態が伺えます。ニュース不足による情報真空では、センチメント判断が困難なため中立的な評価となります。投資判断には企業決算発表、アナリストレポート、業界トレンドなどの追加情報が必要です。</div>
+            <ul class="key-points"><li>直近ニュースが0件で市場の関心度が低い</li><li>ポジティブ・ネガティブシグナルが検出されていない</li><li>情報不足による中立スコア評価</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">⚠️ リスク分析</div>
+            <div class="agent-score" style="color:#f85149">3.9<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">6838.Tは年率77.6%の極めて高いボラティリティを示す高リスク銘柄です。日次VaR -5.74%は100営業日あたり5日間で1日に5%以上の損失が発生することを意味し、極度の価格変動性が確認されます。ベータ0.12という低感応度は市場全体との連動性が弱く、固有リスク（アルファリスク）が支配的であることを示唆します。一方、142.3%の優れたリターンとシャープレシオ1.83は、リスク調整後のリターンが良好であることを示していますが、これは過去データに基づくもので将来継続を保証しません。高ボラティリティ環境でのリターンは統計的変動や市場ミスプライシング修正による可能性が高く、再現性に乏しい点が懸念されます。</div>
+            <ul class="key-points"><li>年率77.6%の極度のボラティリティ：テクノロジー・バイオテク・仮想通貨関連企業の水準で、価格変動が極めて不安定</li><li>日次VaR -5.74%：1日の損失が5%超になる確率が5%存在。短期的な資産毀損リスクが極めて高い</li><li>ベータ0.12の低感応度：市場全体の動きと無関係に独自リスクで変動。セクターシフトや企業固有ニュースに極度に敏感</li></ul>
+          </div></div>
+    </div>
+  </details>
+  <details>
+    <summary>
+      <span><strong>AMZN</strong> &nbsp; Amazon.com, Inc.</span>
+      <span style="color:#ffeb3b">総合: 4.5 / 中立</span>
+    </summary>
+    <div class="detail-content">
+      <div class="agent-grid">
+          <div class="agent-card">
+            <div class="agent-name">📈 テクニカル分析</div>
+            <div class="agent-score" style="color:#f85149">3.7<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">AMZNは売りシグナルが優位な状態です。RSI43.2は中立ですが、MACDはシグナルラインを大きく下回り（-1.97のヒストグラム）弱気姿勢が明確です。価格がSMA20・50を約4%下抜け、短期・中期トレンドが弱体化しています。ただしSMA200（232.67）からは5.7%上方にあり長期トレンドは維持。ボリンジャーバンドは標準的で過度の売られすぎはなく、反転の可能性も残存しています。上昇への転換にはMACDがシグナルラインを上抜けし、RSIが50を超える必要があります。</div>
+            <ul class="key-points"><li>MACDが負圏でシグナルラインを下回る弱気状態。ヒストグラム-1.97で下落加速の可能性</li><li>価格がSMA20/50を下抜けし、短期・中期の下降圧力が存在。ただしSMA200上方を維持</li><li>RSI43.2は中立だが売られすぎではなく、さらなる下値拡大のリスク。50ラインまでの復帰が重要</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💼 ファンダメンタル分析</div>
+            <div class="agent-score" style="color:#e3b341">5.5<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">Amazonは高い収益性（ROE24.3%、営業利益率13.1%）と堅調な成長（売上高16.6%）を示す優良企業。ただしバリュエーション面での懸念がある。トレーリングPER31.7倍は業界水準より割高で、PBR5.99倍も高い。フォワードPER24.9倍と来期への楽観視が織り込まれており、期待値を上回る利益成長が必要。配当ゼロだが成長再投資戦略。D/E比53.3%は健全。流動比率1.18は最低限だが許容範囲。長期的な競争優位性（AWS、スケール）が高PER正当化の根拠となるが、現在の株価には相応の成長が組み込まれている。</div>
+            <ul class="key-points"><li>ROE24.3%：優れた資本効率。競争優位性の証拠</li><li>フォワードPER24.9倍 < トレーリング31.7倍：増益トレンドが反映だが高水準維持が課題</li><li>売上高成長16.6%：安定成長だが高PER正当化には継続的な加速期待が必要</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💬 センチメント分析</div>
+            <div class="agent-score" style="color:#f85149">3.8<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">Amazonは本日、複数の重大ニュースに直面しています。1つ目はSpaceXの時価総額がAmazonを上回ったとの報道で、相対的な市場評価の低下を示唆しています。2つ目はより深刻で、FTCがAmazonの広告慣行と表示に関する苦情を起草したというもので、数十億ドルの罰金につながる可能性があります。これは規制リスクの顕在化を意味します。ただし、Amazonの本業の経営状況悪化を示すニュースはなく、規制問題が主要な懸念です。短期的には売り圧力が予想されますが、市場全体のセンチメントと個別銘柄の実績にも左右されます。</div>
+            <ul class="key-points"><li>FTCがAmazonの広告慣行に関する苦情を起草、数十億ドルの罰金リスク</li><li>SpaceXの時価総額がAmazonを上回り、相対的な市場評価低下</li><li>規制スクルーティニーの高まり、本業への影響なし</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">⚠️ リスク分析</div>
+            <div class="agent-score" style="color:#e3b341">5.1<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">AMZNは年率ボラティリティ30.3%と高い価格変動性を示し、ベータ1.44で市場平均より1.4倍変動が大きい高感応度銘柄です。ただし18.2%の年率リターンで、-21.7%の最大ドローダウンは許容範囲内です。懸念はシャープレシオ0.60で、リスク調整後リターンが標準以下であり、VaRも-2.79%と高い水準。米国大型テック株としては成長期待がある一方、高金利環境下での割高評価リスクと市場変動への高い感応度が特徴です。リスク許容度が高い投資家向け。</div>
+            <ul class="key-points"><li>ボラティリティ30.3%は市場平均の2倍近く。テック株特有の高変動性を内包</li><li>ベータ1.44で市場下落時に同幅以上の損失リスク。分散効果が限定的</li><li>シャープレシオ0.60は低く、獲得リターンがボラティリティに見合っていない状況</li></ul>
+          </div></div>
+    </div>
+  </details>
+  <details>
+    <summary>
+      <span><strong>AMD</strong> &nbsp; Advanced Micro Devices, Inc.</span>
+      <span style="color:#ffeb3b">総合: 4.4 / 中立</span>
+    </summary>
+    <div class="detail-content">
+      <div class="agent-grid">
+          <div class="agent-card">
+            <div class="agent-name">📈 テクニカル分析</div>
+            <div class="agent-score" style="color:#e3b341">5.5<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">AMDは大幅下落（-7.30%）後の調整局面にあります。RSI56.9は中立ゾーンで買われすぎではありませんが、MACDは弱気クロス状態（ライン < シグナル、ヒストグラム-4.78）で下向きモメンタムを示唆。移動平均は強気の３本揃い（SMA20 > SMA50 > SMA200）で長期上昇トレンドは健全ですが、短期的には調整圧力が強い。価格がSMA20（492.45）を下回り、ボリンジャーバンド中央付近で迷っている状態。反転の兆候まで待つべき局面。</div>
+            <ul class="key-points"><li>MACDが弱気クロスで下向き。ヒストグラム縮小傾向。短期的な売り圧力が継続中</li><li>移動平均の３本揃いは強気ですが、価格がSMA20を割込み調整局面入り。SMA50（399.12）がサポート</li><li>RSI56.9は中立。反転上昇には売られすぎゾーン（30以下）への下落またはMACD強気クロスが必要</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💼 ファンダメンタル分析</div>
+            <div class="agent-score" style="color:#f85149">3.8<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">AMDは高成長（売上37.8%）と優良な利益率（営業利益率14.4%、純利益率13.4%）が特徴ですが、バリュエーション評価では大きな課題があります。トレーリングPER168.5倍は極めて高く、フォワードPER38.7倍でも中核企業の基準を上回ります。PBR12.83倍も割高で、EV/EBITDA119倍は成長期待を大きく織り込んでいます。ROE8.06%は決して低くありませんが、バリュエーションの高さに見合う資本効率ではありません。負債比率6.0は業界高水準で懸念材料です。配当ゼロで成長再投資に充当している戦略は理解できますが、現在の株価では高成長を完全に織り込み済みです。</div>
+            <ul class="key-points"><li>トレーリングPER168.5倍は極めて割高。フォワード38.7倍でも高成長が前提</li><li>高成長（売上37.8%）と優良利益率で実力はあるが、株価は先行評価段階</li><li>負債自己資本比率6.0は高リスク。流動比率2.73は健全だが財務レバレッジが大きい</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💬 センチメント分析</div>
+            <div class="agent-score" style="color:#e3b341">5.4<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">AMDに関して、30MW AIコンピュート取引（Rackspace）やImperial CollegeとのパートナーシップなどAI関連の新規ビジネス動向が報道されており、AIトレンドの追い風を受けている。一方で、同じセミコンダクター銘柄のNvidia、Broadcom、Micronが下落している市場環境は逆風。ただしAMDは相対的にAI供給チェーンの重要性が認識されつつあり、セクター全体の軟調さの中でも個別案件の受注は好材料。短期的には注視の対象。</div>
+            <ul class="key-points"><li>AMD and Rackspace 30MW AI Compute Deal - 規制企業向けのAI計算資源の大型受注</li><li>New AI Memory Deal - メモリ関連のAI取引が株価を押し上げ</li><li>Imperial College Partnership - 学術機関との協業によるAI技術の拡大</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">⚠️ リスク分析</div>
+            <div class="agent-score" style="color:#f85149">2.9<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">AMDは年率ボラティリティ67.2%と極めて高く、ベータ2.92で市場の約3倍の変動性を示すハイリスク銘柄です。ただし年率リターン161.8%とシャープレシオ2.41は優秀で、リスクに見合うリターンを達成しています。最大ドローダウン-27.8%は許容可能な範囲ですが、95% VaR -5.28%は日次ベースで極めて高い損失確率を示し、ボラティリティ・クラスタリングによる急落リスクが存在します。テクノロジー・半導体セクターの特有リスク（競争激化、地政学的リスク）と相まって、高い投資判断が必要です。リスク許容度の高い投資家向けの銘柄です。</div>
+            <ul class="key-points"><li>年率ボラティリティ67.2%は非常に高く、短期的な価格変動が激しい。ボラティリティの急変リスク（ボラティリティクラスタリング）により、静寂の後に急落する可能性がある</li><li>ベータ2.92は市場下落時に大型株の約3倍の損失が発生する可能性を示唆。弱気相場での下落リスクが極めて高い</li><li>95% VaR -5.28%は1営業日で5%超の損失が発生する確率が5%存在することを意味し、テールリスク（裾野の予想外損失）が潜在している</li></ul>
+          </div></div>
+    </div>
+  </details>
+  <details>
+    <summary>
+      <span><strong>7084.T</strong> &nbsp; Smile Holdings Inc.</span>
+      <span style="color:#ffeb3b">総合: 4.0 / 中立</span>
+    </summary>
+    <div class="detail-content">
+      <div class="agent-grid">
+          <div class="agent-card">
+            <div class="agent-name">📈 テクニカル分析</div>
+            <div class="agent-score" style="color:#e3b341">4.9<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">7084.Tは前日比+21.29%の大幅上昇で現在価格2837.00。RSI65.7は買われすぎゾーン手前の警戒水準です。MACDはヒストグラム62.98で正転していますが、MACDラインがシグナルを大きく上回り、ゼロラインに接近中の強気シグナル。価格はSMA20を24.7%上回り、短期では急騰局面。しかし重大な警告として、価格はボリンジャーバンド上限2728.88を大きく超過し、%B値が極めて高い異常な過熱状態です。SMA50（2635.10）を明確に上抜けましたが、SMA200（2709.96）近くでの乱高下リスク。短期的な買いモメンタムと中期トレンドの上昇姿勢は認められるものの、過度な短期急騰による利確圧力と反落リスクが極めて高い局面です。</div>
+            <ul class="key-points"><li>RSI65.7は買われすぎゾーン手前。70超過への警戒が必要。ダイバージェンスの発生可能性も注視</li><li>価格がボリンジャーバンド上限を大きく超過（%B > 1.5）。異常な過熱状態で利確売り圧力が極めて高い</li><li>MACD強気クロス（ヒストグラム正）だが、短期の過度な上昇は持続性に乏しい。SMA200（2709.96）が重要なレジスタンス</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💼 ファンダメンタル分析</div>
+            <div class="agent-score" style="color:#f85149">2.4<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">Smile Holdingsは極めて深刻な財務・収益性の悪化が見られます。営業利益率がマイナス2.4%、ROEは3.48%と極めて低く、資本効率性が著しく欠けています。PER41.7倍は高すぎる一方で、EPS成長が限定的（予想77.20円は前年比+13%程度）であり、割高感が強い。最大の懸念は配当利回り370%・配当性向139%という異常値で、これは業績悪化による減配リスクを強く示唆しています。D/E比率107%と負債依存度が高く、流動比率1.10と流動性も薄弱です。バリュートラップの典型的な特性を示しており、投資価値は極めて低い。</div>
+            <ul class="key-points"><li>営業利益率-2.4%・ROE3.48%：極めて低い資本効率性と収益力</li><li>配当利回り370%・配当性向139%：持続不可能な配当で減配リスク極度に高い</li><li>高PER41.7倍vs低成長1%：割高な株価評価。バリュートラップ疑念</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💬 センチメント分析</div>
+            <div class="agent-score" style="color:#e3b341">5.0<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">銘柄7084.Tについては直近のニュースが報告されていないため、市場のセンチメントを判断する材料が不足しています。ポジティブ・ネガティブのキーワード検出がなく、新規情報がない状態です。投資判断には企業の過去の業績トレンド、決算日程、市場環境など他の情報源の確認が必要です。</div>
+            <ul class="key-points"><li>直近ニュースなし - 新規情報による買い材料・売り材料がない</li><li>キーワード分析：ポジティブ0件、ネガティブ0件</li><li>情報不足により中立スコア（5.0）を付与 - 他の分析手段の活用を推奨</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">⚠️ リスク分析</div>
+            <div class="agent-score" style="color:#f85149">3.7<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">7084.T（ベルトラ）は極めて高いボラティリティ（46.6%）と大きなドローダウン（-45.0%）を特徴とする高リスク銘柄です。ただし、TOPIXに対するベータがほぼゼロ（-0.00）という特異性と、64.9%の高リターン、シャープレシオ1.39が注目されます。市場全体との無相関性が強く、個別企業要因が支配的な銘柄と推察されます。日次VaR（-2.96%）は相応のボラティリティを反映しており、100営業日に5日程度は3%を超える損失発生の可能性があります。高成長期待がある一方で、価格変動リスクは極めて大きく、投資適格性は投資家のリスク許容度と投資期間に大きく依存します。</div>
+            <ul class="key-points"><li>極めて高いボラティリティ（46.6%）と深刻なドローダウン（-45.0%）：短期的な価格変動が極めて大きく、精神的な耐性が必要</li><li>市場との完全な無相関性（β≈0）：個別企業の業績悪化や事業リスクが直接株価に反映。セクター分散効果が期待できない</li><li>高リターン（64.9%）とシャープレシオ1.39のギャップ：リスク調整後のリターン効率は良好だが、実現はボラティリティリスク引き受けの代償。長期保有前提</li></ul>
+          </div></div>
+    </div>
+  </details>
+  <details>
+    <summary>
+      <span><strong>3559.T</strong> &nbsp; p-ban.com Corp.</span>
+      <span style="color:#ff7043">総合: 3.9 / 売り</span>
+    </summary>
+    <div class="detail-content">
+      <div class="agent-grid">
+          <div class="agent-card">
+            <div class="agent-name">📈 テクニカル分析</div>
+            <div class="agent-score" style="color:#e3b341">4.9<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">459円での+21.11%の急騰後、調整局面に入った可能性が高い。RSI55は中立的で過熱感がない。MACD指標の複合判断では、ヒストグラムが正値（1.3648）に転じており、売圧が減少している兆候を示す。しかし、MACDラインがシグナルラインを下回っており、短期的な弱気シグナルが継続。移動平均線の配置が逆パーフェクトオーダー（SMA20<SMA50<SMA200）を示しており、長期トレンドは明確に下向き。価格がSMA50とほぼ同値だが、SMA200より6.9%低い状態。ボリンジャーバンドの中央付近での推移であり、両方向への選択余地がある。強気と弱気のシグナルが混在する調整局面と判断される。</div>
+            <ul class="key-points"><li>MACD史上ラインがシグナルを下回り、短期的な弱気シグナル継続中</li><li>長期移動平均線（SMA200）より6.9%下落しており、上昇トレンドの確立に至っていない</li><li>RSI55は中立的で、さらなる買われすぎへの警戒は不要。ただし上昇余地も限定的</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💼 ファンダメンタル分析</div>
+            <div class="agent-score" style="color:#f85149">4.0<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">配当利回り436%は明らかに異常値であり、データエラーの可能性が高い。これを除外して評価すると、トレーリングPER20.4倍は適正範囲内だが、ROE7.51%は資本効率が低く、営業利益率10.56%も業界平均より劣位。売上成長率7.7%は緩慢で、時価総額2.1億円の小型株である点もリスク。流動比率4.24は良好だが、フォワードEPS予想がなく将来成長性が不透明。配当性向44%は持続可能だが、利益成長がない場合、株価上昇の見通しは限定的。</div>
+            <ul class="key-points"><li>配当利回り436%はデータエラーの可能性が高く、除外して判断が必要</li><li>ROE7.51%で資本効率が低く、持続的な価値創造に疑問</li><li>売上成長率7.7%は低成長で、テクノロジー企業としては期待値が低い</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💬 センチメント分析</div>
+            <div class="agent-score" style="color:#e3b341">5.0<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">銘柄コード3559.T（ビックカメラ）について、直近のニュースヘッドラインが0件となっており、分析対象となる新規情報がありません。ポジティブ・ネガティブキーワードも検出されていないため、市場センチメントを判断する材料が不足している状態です。このような場合、投資家心理は中立的であると考えられ、過去のセンチメントや四半期決算までの時間経過などの他要因に依存します。定期的なニュース配信再確認が推奨されます。</div>
+            <ul class="key-points"><li>ニュース配信0件：足がかりとなる新規情報がない</li><li>キーワード検出0：ポジティブ/ネガティブ材料の不在</li><li>中立シグナル：現在の市場センチメント判定は困難</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">⚠️ リスク分析</div>
+            <div class="agent-score" style="color:#f85149">1.7<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">本銘柄は極めて高いリスク水準にあります。年率ボラティリティ43.1%は非常に高く、市場変動が激しい状況を示しています。最大ドローダウン-35.3%は弱気相場で一般的な水準ですが、年率リターン-10.7%かつシャープレシオ-0.25という負のリターンが重大な懸念です。日次VaR-3.83%は100営業日に約5日、この水準以上の損失が発生することを意味し、尾部リスク（テールリスク）が極めて高い状態です。ベータ0.04という低感応性は、市場全体の下落からも個別要因の悪化からも逃れられていないことを示唆しており、分散効果が期待できません。</div>
+            <ul class="key-points"><li>年率ボラティリティ43.1%は非常に高く、投資判断を極めて困難にする価格変動性</li><li>シャープレシオ-0.25およびマイナスリターンは、リスク調整後の投資効率が著しく悪化していることを示唆</li><li>日次VaR-3.83%は異常に大きく、極端な日次損失が頻繁に発生する可能性を示す</li></ul>
+          </div></div>
+    </div>
+  </details>
+  <details>
+    <summary>
+      <span><strong>TSLA</strong> &nbsp; Tesla, Inc.</span>
+      <span style="color:#ff7043">総合: 3.3 / 売り</span>
+    </summary>
+    <div class="detail-content">
+      <div class="agent-grid">
+          <div class="agent-card">
+            <div class="agent-name">📈 テクニカル分析</div>
+            <div class="agent-score" style="color:#f85149">2.9<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">TSLAは複合的な弱気シグナルを示唆しており、短期的な買い意欲は限定的です。RSI48.2は中立的ですが、MACD（-1.87）がシグナル線（0.76）を大きく下回り、ヒストグラムの-2.62は下落モメンタムが強いことを示唆しています。価格はSMA200（416.30）を2.8%下回り、SMA20（414.92）も上抜けできず、トレンド構造が弱気を示唆。ボリンジャーバンドの中央（414.92）の下で推移しており、強い上昇の確認材料に欠けます。短期的には404.66→382.21（下限）への下押し圧力が高いフェーズと判断されます。</div>
+            <ul class="key-points"><li>MACD弱気シグナル：MACDラインがシグナルを下回る状態が続き、ヒストグラムの急速な縮小も見られず、下落トレンド継続の可能性が高い</li><li>トレンド構造の混乱：SMA20がSMA200を下回る逆パーフェクトオーダー寸前。価格はSMA200の下、SMA50の上という不安定なポジション</li><li>反転の前提条件が不足：売られすぎ水準（RSI<30）に至っておらず、反転を示唆する明確なダイバージェンスも確認できない状態。下値382.21到達の可能性を視野に</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💼 ファンダメンタル分析</div>
+            <div class="agent-score" style="color:#f85149">2.4<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">Teslaは極度の割高状態。トレーリングPER364.6倍、PBR18.48倍、EV/EBITDA136.7倍は投資家の非現実的な期待を反映。収益性も弱く、ROE4.9%、営業利益率4.2%は自動車業界の平均水準以下。売上成長15.8%は良好だが、利益成長がそれに追いついていない。配当なしで株価上昇のみに依存。負債比率18.74倍は異常に高く、財務安定性に懸念あり。フォワード見通しで改善予想（PER161.9倍、EPS2.50予想）されるも、期待値が高すぎる。バリュートラップリスクが極めて高い。</div>
+            <ul class="key-points"><li>トレーリングPER364.6倍は歴史的高水準。成長期待が過度に織り込まれている</li><li>ROE4.9%、営業利益率4.2%は低く、資本効率が劣悪。製造業平均を下回る</li><li>負債自己資本比率18.74倍。過度なレバレッジで財務リスク顕在化時の下振れ大きい</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💬 センチメント分析</div>
+            <div class="agent-score" style="color:#e3b341">5.9<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">テスラ関連ニュースは混合的。ポジティブ要因として、AI5チップの完成（テープアウト）はAI企業への転換という長期成長ストーリーを支持。ロボタクシーやロボティクス関連のテーマも業界トレンドとして有利。一方、ニュースの大半が周辺話題（SpaceX、ライバル企業、マスク個人資産）で、テスラ本体の直接的なポジティブニュースは限定的。規制対応（ニュージャージー州自動運転法案への対抗）は防守的な動き。短期的には材料不足で様子見、中期的にはAI・自動運転事業への期待が下支え。</div>
+            <ul class="key-points"><li>Tesla AI5チップ完成：自動運転・AI企業への事業転換の重要マイルストーン</li><li>ロボタクシー・ロボティクス：テーマ性が強く、投資家の長期成長期待を支援</li><li>規制対応（ニュージャージー州）：自動運転関連の規制リスクを示唆、注視必要</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">⚠️ リスク分析</div>
+            <div class="agent-score" style="color:#f85149">2.7<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">TSLAは年率ボラティリティ44.4%と非常に高く、ベータ2.03で市場の2倍以上の変動性を示します。95% VaRが-4.51%と日次で極めて高いリスクを抱えており、100営業日ごとに5日程度は4.51%以上の損失が発生する可能性があります。最大ドローダウン-29.9%は中程度ですが、シャープレシオ0.78は標準的リターンに対してリスクが過度であることを示唆しています。年率リターン34.6%は魅力的ですが、それを上回る変動性リスクがあり、リスク許容度の低い投資家には不適切です。</div>
+            <ul class="key-points"><li>年率ボラティリティ44.4%は市場平均の2.5倍以上。テスラの急速なイノベーション・製品ライフサイクルが短期的な価格変動を引き起こす</li><li>ベータ2.03により株式市場の下落局面では損失が加速。2024年の金利上昇環境ではグロース株として追加的な下方圧力が生じやすい</li><li>VaR -4.51%は裾リスク（テールリスク）が大きく、想定外の損失シナリオに直面するリスク。過去データの5%エリアで予測不可能な事象が発生する</li></ul>
+          </div></div>
+    </div>
+  </details>
+  <details>
+    <summary>
+      <span><strong>2586.T</strong> &nbsp; Fruta Fruta Inc.</span>
+      <span style="color:#ff7043">総合: 3.3 / 売り</span>
+    </summary>
+    <div class="detail-content">
+      <div class="agent-grid">
+          <div class="agent-card">
+            <div class="agent-name">📈 テクニカル分析</div>
+            <div class="agent-score" style="color:#e3b341">4.9<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">銘柄2586は+20%の急騰後、調整局面にあると判断されます。RSI59.2は中立ゾーンで過熱感がなく、MACDはヒストグラムが正値で弱気クロスから脱出中です。ただしSMA200（156.02）からの乖離-27.6%は深刻で、長期下降トレンドが未反転。現価格はSMA50上方10%で中期抵抗線となります。ボリンジャーバンド内での推移は変動性の低下を示唆。急騰の後続力に疑問が残り、テクニカルには買い優位の根拠が限定的です。</div>
+            <ul class="key-points"><li>MACDヒストグラム+で弱気転換の初期段階だが、確実な強気クロスへの期待は時期尚早</li><li>長期SMA200からの乖離-27.6%は重大。SMA200を上抜けない限り上昇の根拠は薄弱</li><li>RSI59.2は買われすぎでなく、調整耐性あり。ただし突発的な急騰は持続性に乏しい傾向</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💼 ファンダメンタル分析</div>
+            <div class="agent-score" style="color:#f85149">1.5<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">Fruta Fruta Inc.は極度に割高で経営状況が悪化している。トレーリングPER143倍は異常な水準で、EPS0.79円と極めて低い。営業利益率-9.67%は営業赤字を示唆し、売上高成長率-30.50%の大幅減少は深刻な需要減。ROE1.65%、ROA1.04%と資本効率は極めて低い。流動比率12.26は高いが、利益創出できない企業では資金枯渇リスク。配当なしで株主還元もない。バリュートラップの典型的な特性を示している。</div>
+            <ul class="key-points"><li>トレーリングPER143倍：異常な割高水準、投資の対価が全く見合わない</li><li>営業利益率-9.67%かつ売上減30.50%：ビジネスモデルの根本的な問題</li><li>ROE1.65%、ROA1.04%：経営危機的な低採算率、資本破壊状態</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💬 センチメント分析</div>
+            <div class="agent-score" style="color:#e3b341">5.0<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">銘柄2586.Tに関する直近ニュースが0件となっており、市場からの新規情報が提供されていない状態です。ポジティブ・ネガティブの感情シグナルが検出されないため、センチメント判断を下す根拠が不足しています。このような情報空白期間では、投資家心理は過去の企業実績や業界全体のトレンドに依存する傾向があります。新規ニュースの発表、決算情報の開示、市場イベント参加などの情報が必要です。</div>
+            <ul class="key-points"><li>直近ニュース件数が0件 - 市場からの新規情報なし</li><li>ポジティブ・ネガティブキーワードの検出不可 - 判断材料の欠落</li><li>情報不足のため中立スコア(5.0)を付与 - 今後のニュース発表に注視が必要</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">⚠️ リスク分析</div>
+            <div class="agent-score" style="color:#f85149">1.7<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">2586.T（日本単価）は極めて高リスク銘柄です。年率ボラティリティ106.8%は市場平均の7倍以上で、過去最高値から81.1%の下落を経験しています。95%信頼水準のVaRが-8.45%（100日に5日は8%以上の損失）という水準は、極度の価格不安定性を示唆しています。年率19.3%のリターンがありますが、シャープレシオ0.18という極めて低い値は、リスク調整後では全くリターンが報酬されていないことを意味します。ベータ0.06は市場への依存度が低いため、この極端な値動きは企業固有リスク（可能性としては事業モデルの不確実性、流動性不足、または極端な値動きを示す特殊な銘柄特性）に由来します。極めて慎重な判断が必要です。</div>
+            <ul class="key-points"><li>年率ボラティリティ106.8%は投機的銘柄レベル。1日で5-10%の変動が頻発する可能性</li><li>最大ドローダウン-81.1%は経営危機水準。投資資金の大部分を失うリスクが存在</li><li>シャープレシオ0.18は極めて低く、リスク調整後リターンがほぼゼロ。リスク対リターンのバランスが著しく悪い</li></ul>
+          </div></div>
+    </div>
+  </details>
+  <details>
+    <summary>
+      <span><strong>6634.T</strong> &nbsp; JN Group Inc.</span>
+      <span style="color:#ff7043">総合: 3.0 / 売り</span>
+    </summary>
+    <div class="detail-content">
+      <div class="agent-grid">
+          <div class="agent-card">
+            <div class="agent-name">📈 テクニカル分析</div>
+            <div class="agent-score" style="color:#e3b341">4.1<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">6634.Tは急騰（+21.82%）で一時的な過熱状態にありますが、テクニカルは弱気シグナルが支配的です。RSI49.3は中立ですが、MACD両線がゼロラインの下にあり、ヒストグラムが小さな正値でも弱気局面を脱していません。致命的なのは長期トレンドの悪さで、SMA50・SMA200を大幅に下回り、強い下降トレンド中です。価格はボリンジャーバンド中央付近で、バンドウォークもなく上値の重さを示唆しています。急騰は単なる反発であり、上昇トレンド転換には程遠い状態です。</div>
+            <ul class="key-points"><li>MACD両線がゼロラインの下：中期上昇トレンドの確立なし。下降トレンド継続中</li><li>移動平均線（SMA50:-18.5%, SMA200:-41.9%）の大幅下回り：強い下降トレンド環境。反発は売り目処</li><li>RSI49.3は中立だが、20日線を軽く上抜けしただけで材料不足。下落トレンド転換の根拠が不十分</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💼 ファンダメンタル分析</div>
+            <div class="agent-score" style="color:#f85149">2.5<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">JN Group Inc.は深刻な経営危機に陥っている企業です。営業利益率-50.8%、純利益率-33.2%で甚大な赤字を計上。ROE-35.6%、ROA-0.58%と資本効率は壊滅的です。EPS-20.05円で利益を生み出せず、PER評価が不可能。PBR1.0倍での表面的な割安性は、純資産が急速に毀損する中で偽りです。D/E比170.96と過度な負債依存体質は継続性への深刻な疑問を呈します。売上成長5.9%は健全ですが、経営効率の著しい悪化によって相殺されます。流動比率1.01は短期的な流動性危機を示唆。配当ゼロは緊急事態の証拠です。ターンアラウンド実現の可能性が見当たらず、バリュートラップに該当します。</div>
+            <ul class="key-points"><li>営業利益率-50.8%：主要事業で大幅赤字。経営モデルが崩壊</li><li>D/E比170.96：過度な負債。負債返済不能のリスク極めて高い</li><li>ROE-35.6%、赤字EPS：株主資本の急速毀損が進行中</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">💬 センチメント分析</div>
+            <div class="agent-score" style="color:#e3b341">5.0<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">NeoPhotonics（6634.T）について最新ニュースが報道されていない状態です。ニュースフロー途絶のため、市場センチメント測定に十分な材料がありません。この場合、投資家心理は中立的と判断されます。決算発表や重要な経営ニュースまで様子見の局面となる可能性が高いです。</div>
+            <ul class="key-points"><li>直近ニュース件数ゼロ - 新規材料の不在</li><li>キーワード分析スコア5.0 - ポジティブ/ネガティブワード検出なし</li><li>情報不足による中立判定 - 次の決算発表やニュースが重要</li></ul>
+          </div>
+          <div class="agent-card">
+            <div class="agent-name">⚠️ リスク分析</div>
+            <div class="agent-score" style="color:#f85149">0.7<span style="font-size:0.8rem;color:#8b949e">/10</span></div>
+            <div class="agent-analysis">6634.T（NeoPix）は極めて高いリスク資産です。年率ボラティリティ90.8%は仮想通貨レベルの価格変動性を示唆し、-76.6%の最大ドローダウンは投資元本の4分の3超の喪失を意味します。シャープレシオ-0.51はリスクを上回る負のリターンを示し、日次VaR-5.41%から週単位では30%超の損失日が想定されます。特に懸念すべきはベータ0.03という異常な低さで、市場全体との非同期性が強く、イディオシンクラティックリスク（固有リスク）が圧倒的に支配的です。単なる高ボラティリティではなく、特定の企業固有要因による極度の価格不安定性を示唆しており、投資家保護の観点から慎重な判断が必須です。</div>
+            <ul class="key-points"><li>年率ボラティリティ90.8%：仮想通貨・ハイリスク銘柄レベルの極度な価格変動。通常株の3〜6倍。</li><li>最大ドローダウン-76.6%と年率リターン-46.4%：過去の高値から3/4超が消失。回復には数年以上の期間が必要な可能性。</li><li>シャープレシオ-0.51とVaR-5.41%：リスク調整後リターンが著しく悪く、100日に5日は5%超の日中損失が発生する極度なリスク資産。</li></ul>
+          </div></div>
+    </div>
+  </details>
+
+</div>
+
+<footer>
+  <p>投資分析システム &nbsp;|&nbsp; Powered by Claude claude-haiku-4-5-20251001 (Anthropic) &nbsp;|&nbsp; データ: Yahoo Finance, Capitol Trades, みんかぶ</p>
+  <p style="margin-top:8px;">⚠️ 本レポートは情報提供のみを目的としており、投資助言ではありません。投資判断はご自身の責任で行ってください。</p>
+</footer>
+
+</body>
+</html>
